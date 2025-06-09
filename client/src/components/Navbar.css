@@ -1,0 +1,48 @@
+/* Add this to your CSS */
+
+.mobile-menu-icon {
+  display: none;
+  font-size: 30px;
+  color: white;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .nav1 {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .logo-container {
+    margin: 10px 0;
+  }
+
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    margin-left: 0;
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links li {
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-links a {
+    padding: 10px 20px;
+    display: block;
+    width: 100%;
+  }
+
+  .mobile-menu-icon {
+    display: block;
+  }
+}

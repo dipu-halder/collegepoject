@@ -1,0 +1,213 @@
+*{
+  padding: 0;
+  margin: 0;
+}
+body {
+    font-family: sans-serif;
+    margin: 0;
+    background: #dec9d786;
+  }
+  
+  .menu-scroll {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 1rem;
+  }
+  
+  .menu-card {
+    display: inline-block;
+    width: 130px;
+    text-align: center;
+    background: white;
+    margin-right: 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    cursor: pointer;
+  }
+  
+  .menu-card img {
+    height: 50px;
+    margin-bottom: 0.5rem;
+    transition: transform 0.3s;
+  }
+  
+  .menu-card img:hover {
+    transform: scale(1.1);
+  }
+  
+  /* .filters {
+    padding: 1rem;
+  }
+  
+  .filters label {
+    margin: 0.25rem;
+    background: #f1f1f1;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    display: inline-block;
+  } */
+  .filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .filters label {
+    background-color: #fff;
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .filters label:hover {
+    background-color: #f0f0f0;
+    border-color: #bbb;
+  }
+  
+  
+  .cards {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 1rem;
+    gap: 2rem;
+  }
+  
+  .card {
+    width: 394px;
+    height: 371px;
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+   
+  }
+  
+  .card img {
+    position: absolute;
+    width: 100%;
+    height: 80%;
+    object-fit: cover;
+    
+  }
+  
+  .card-content {
+    position: absolute;
+    padding: 1rem;
+    opacity: 2.5;
+    color: rgb(255, 255, 255);
+  }
+  
+  #input-search{
+    margin: 45px;
+    height: 3.5rem;
+    width: 25rem;
+    display: flex;
+    justify-self: center;
+    align-items: center;
+   }
+   #search{
+     width: 19rem;
+     height: 3rem;
+     font-size: 1.2rem;
+     border-bottom-left-radius: 25px;
+     border-top-left-radius: 25px;
+     border: transparent;
+   }
+   #searchBtn{
+     width: 5rem;
+     height: 3rem;
+     font-size: 1.7rem;
+     border-bottom-right-radius: 25px;
+     border-top-right-radius: 25px;
+     border: none;
+     background-color: red;
+     cursor: pointer;
+   }
+   #searchBtn:active{
+     background-color: blue;
+     color: white;
+   }
+ 
+  
+  .heart-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgb(255, 255, 255);
+    border-radius: 50%;
+    padding: 0.5rem;
+    cursor: pointer;
+    font-size: 24px;
+    color: gray;
+  }
+  
+  .heart-icon.liked {
+    color: red;
+  }
+  
+  .delites{
+    position: absolute;
+    bottom: 5rem; 
+    color: white;
+  }
+  .bottom-row {
+    bottom: 10px;
+    width: 100%;
+    position: absolute;
+    padding: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  
+  .bottom-row strong {
+    font-size: x-large;
+    color: #333;
+  }
+  
+  .bottom-row button {
+    background-color: #ff6347;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: x-large;
+    transition: background-color 0.3s;
+  }
+  .bottom-row button:hover {
+    background-color: #e5533d;
+  }
+  
+.cart-float-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: rgb(255, 87, 34);
+    color: white;
+    font-size: 24px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 8px;
+    z-index: 100;
+    padding: 12px 16px;
+    border-radius: 50%;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+  
+  .cart-float-btn:hover {
+    background-color: #e64a19;
+  }
+  

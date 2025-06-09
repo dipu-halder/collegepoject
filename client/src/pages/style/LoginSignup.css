@@ -1,0 +1,130 @@
+.login-container {
+background: linear-gradient(to bottom, #ffffff, #40938b);
+min-height: 100vh;
+display: flex;
+justify-content: center;
+padding: 40px 20px;
+ 
+}
+
+.login-wrapper {
+display: flex;
+align-items:center ;
+flex-direction: column;
+width: 50rem;
+
+gap: 4px;
+}
+
+.login-login {
+width: 100%;
+    max-width: 500px;
+    height: 424px;
+background-color: #d7d7d7/30%;
+padding: 25px;
+border-radius: 16px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.login-signup {
+width: 100%;
+    max-width: 500px;
+    height: 577px;
+background-color: #d7d7d7/30%;
+padding: 25px;
+border-radius: 16px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.login-title {
+font-size: 28px;
+font-weight: bold;
+color: #f4a300;
+margin-bottom: 20px;
+text-align: center;
+}
+.login-or {
+font-size: 20px;
+font-weight: bold;
+color: #000000;
+margin-bottom: 20px;
+margin-top: 15px;
+text-align: center;
+}
+
+.form-group {
+margin-bottom: 15px;
+text-align: left;
+}
+
+.form-group label {
+display: block;
+margin-bottom: 5px;
+font-weight: 500;
+color: #2e625d;
+}
+
+.form-group input {
+width: 100%;
+padding: 10px 15px;
+border: 1px solid #ccc;
+border-radius: 25px;
+background-color: #f9f9f9;
+font-size: 14px;
+}
+
+.form-group input:focus {
+outline: none;
+border-color: #2e625d;
+box-shadow: 0 0 3px #2e625d88;
+}
+
+.btn-submit {
+width: 100%;
+padding: 12px;
+background-color: #357c75;
+color: #fff;
+border: none;
+border-radius: 25px;
+font-weight: 600;
+font-size: 16px;
+cursor: pointer;
+transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+background-color: #2d554c;
+}
+
+.login-image-wrapper {
+max-width: 400px;
+width: 100%;
+display: flex;
+justify-content: center;
+}
+
+.login-image {
+width: 100%;
+    max-width: 320px;
+    height: 414px;
+    border-radius: 1rem;
+}
+
+/* For tablets and up: show form left, image right */
+@media (min-width: 768px) {
+.login-wrapper {
+flex-direction: row;
+
+justify-content: space-between;
+}
+
+.login-card, .login-image-wrapper {
+flex: 1;
+}
+
+.login-image-wrapper {
+display: flex;
+justify-content: center;
+align-items: center;
+padding-left: 30px;
+}
+}
