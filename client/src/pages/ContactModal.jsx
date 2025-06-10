@@ -37,7 +37,7 @@ const ContactPage = () => {
         console.log(contact);
       try {
     
-    const response = await fetch("http://localhost:5000/api/from/contact",{
+    const response = await fetch("https://tiffin-wala.onrender.com/api/from/contact",{
       method: "POST",
       headers:{
         "Content-Type": "application/json"

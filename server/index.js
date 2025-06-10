@@ -10,7 +10,7 @@ const connectDb = require("./utils/db");
 const errorMiddleware = require('./middlewares/error-middleware');
 
 const corsOptions ={
-    origin:"http://localhost:5173",
+    origin:"https://collegepoject-w91a.vercel.app/",
     methods:"GET, POST, put, DELETE, PATCH, HEAD",
     credentials: true // if you use cookies or auth headers
 };
