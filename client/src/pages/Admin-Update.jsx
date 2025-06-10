@@ -20,7 +20,7 @@ const AdminUpdate = () => {
 
   const getSingleUserData = async () => {
     try {
-      const response = await fetch(`https://tiffin-wala.onrender.com/api/admin/users/${params.id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/users/${params.id}`, {
         method: "GET",
         headers: {
           Authorization: authorizationToken,

@@ -29,7 +29,7 @@ export const AdminUsers = () => {
     try {
         
    
-     const response = await fetch(`https://tiffin-wala.onrender.com/api/admin/users/delete/${id}`, {
+     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/users/delete/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: authorizationToken,

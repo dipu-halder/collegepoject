@@ -34,7 +34,7 @@ export const AdminContacts =() =>{
     const deleteContact = async(id) => {
         try {
             
-               const response = await fetch(`https://tiffin-wala.onrender.com/api/admin/contacts/delete/${id}`,{
+               const response = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/contacts/delete/${id}`,{
                 method: "DELETE",
                  headers: {
           Authorization: authorizationToken,

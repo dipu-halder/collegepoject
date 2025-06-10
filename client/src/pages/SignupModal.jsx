@@ -34,7 +34,7 @@ const {storeTokenInLS} = useAuth();
     try {
       
 
-     const response = await fetch("https://tiffin-wala.onrender.com/api/auth/register", {
+     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
