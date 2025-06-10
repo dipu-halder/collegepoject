@@ -272,16 +272,7 @@ export const food = [
     type: "veg",
     pices: "178",
   },
-  {
-    id: "27",
-    img: "/Food_items/Chicken Pakoda.jpg",
-    name: "Chicken Pakora",
-    description: "Lorem ipsum dolor sit amet consectetur.",
-    rating: "4.5",
-    time: "20",
-    type: "non-veg",
-    pices: "178",
-  },
+
   {
     id: "28",
     img: "/Food_items/Veg Pakora.webp",

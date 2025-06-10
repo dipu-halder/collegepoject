@@ -11,7 +11,7 @@ body{
   color: red;
 }
 #navbar{
-  background-image: url("images/chicken2.jpg");
+  background-image: url("/Food_items/Chicken Samosa.jpg");
   background-repeat: no-repeat;
   background-size:cover;
   height: 600px;
