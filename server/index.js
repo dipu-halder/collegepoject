@@ -10,7 +10,7 @@ const connectDb = require("./utils/db");
 const errorMiddleware = require('./middlewares/error-middleware');
 
 const corsOptions ={
-    origin:"https://collegepoject-erpw.vercel.app",
+    origin:"https://heartfelt-griffin-946104.netlify.app/",
     methods:"GET, POST, put, DELETE, PATCH, HEAD",
     credentials: true // if you use cookies or auth headers
 };
