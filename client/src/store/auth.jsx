@@ -27,7 +27,7 @@ export const  AuthProvider = ({children}) =>{
     setIsLoading(true);
     
     try {
-      const response = await fetch("http://localhost:5000/api/auth/user", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/user`, {
         method: "GET",
         headers: {
           Authorization: authorizationToken,
