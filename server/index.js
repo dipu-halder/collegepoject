@@ -16,11 +16,20 @@ const corsOptions ={
    "https://collegepoject-erpw.vercel.app/",
 
   ],
-    methods:"GET, POST, put, DELETE, PATCH, HEAD",
+   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
+
     credentials: true // if you use cookies or auth headers
 };
 app.use(cors(corsOptions));
+app.use((req, res, next) => {
+  console.log("Request Origin:", req.headers.origin);
+  next();
+});
  
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
+  next();
+});
 app.use(express.json());
 
 app.use("/api/auth", authroute);
