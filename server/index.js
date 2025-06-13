@@ -9,18 +9,38 @@ const adminRoute = require("./router/admin-router")
 const connectDb = require("./utils/db");
 const errorMiddleware = require('./middlewares/error-middleware');
 
-const corsOptions ={
-   origin: [
-    "http://localhost:5173",
-    "https://heartfelt-griffin-946104.netlify.app",
-   "https://collegepoject-erpw.vercel.app/",
+// const corsOptions ={
+//    origin: [
+//     "http://localhost:5173",
+//     "https://heartfelt-griffin-946104.netlify.app",
+//    "https://collegepoject-erpw.vercel.app/",
 
-  ],
-   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
+//   ],
+//    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
 
-    credentials: true // if you use cookies or auth headers
+//     credentials: true // if you use cookies or auth headers
+// };
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://heartfelt-griffin-946104.netlify.app",
+  "https://collegepoject-erpw.vercel.app"
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
+  credentials: true
 };
+
 app.use(cors(corsOptions));
+
+// app.use(cors(corsOptions));
 app.use((req, res, next) => {
   console.log("Request Origin:", req.headers.origin);
   next();
