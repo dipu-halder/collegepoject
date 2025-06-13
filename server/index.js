@@ -11,7 +11,7 @@ const errorMiddleware = require('./middlewares/error-middleware');
 
 const corsOptions ={
    origin: [
-    "http://localhost:3000",
+    "http://localhost:5173",
     "https://heartfelt-griffin-946104.netlify.app",
    "https://collegepoject-erpw.vercel.app/",
 
