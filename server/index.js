@@ -20,26 +20,30 @@ const errorMiddleware = require('./middlewares/error-middleware');
 
 //     credentials: true // if you use cookies or auth headers
 // };
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://heartfelt-griffin-946104.netlify.app",
-  "https://collegepoject-erpw.vercel.app"
-];
+// const allowedOrigins = [
+//   "http://localhost:5173",
+//   "https://heartfelt-griffin-946104.netlify.app",
+//   "https://collegepoject-erpw.vercel.app"
+// ];
 
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
-  credentials: true
-};
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
+//   credentials: true
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "OPTIONS"],
+}));
 // app.use(cors(corsOptions));
 app.use((req, res, next) => {
   console.log("Request Origin:", req.headers.origin);
