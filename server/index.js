@@ -81,7 +81,8 @@ const connectDb = require("./utils/db");
 const errorMiddleware = require('./middlewares/error-middleware');
 
 const app = express();
-const cors = require("cors");
+
+// Remove duplicate declaration of cors here
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -104,25 +105,25 @@ const corsOptions = {
 
 app.options("*", cors(corsOptions));
 
-// ✅ Request logging for debugging
+// Request logging for debugging
 app.use((req, res, next) => {
   console.log(`Request: ${req.method} ${req.url}`);
   console.log("Origin Header:", req.headers.origin);
   next();
 });
 
-// ✅ Body Parser
+// Body Parser
 app.use(express.json());
 
-// ✅ Routes
+// Routes
 app.use("/api/auth", authroute);
 app.use("/api/from", contactroute);
 app.use("/api/admin", adminRoute);
 
-// ✅ Error Middleware
+// Error Middleware
 app.use(errorMiddleware);
 
-// ✅ Start Server
+// Start Server
 const PORT = process.env.PORT || 5000;
 
 connectDb().then(() => {
