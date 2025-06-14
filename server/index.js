@@ -73,7 +73,8 @@
 
 require('dotenv').config();
 const express = require("express");
-const cors = require("cors");
+const cors = require("cors"); // ✅ Only once
+
 const authroute = require("./router/auth-router");
 const contactroute = require("./router/contact-model");
 const adminRoute = require("./router/admin-router");
@@ -81,8 +82,6 @@ const connectDb = require("./utils/db");
 const errorMiddleware = require('./middlewares/error-middleware');
 
 const app = express();
-
-// Remove duplicate declaration of cors here
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -103,29 +102,28 @@ const corsOptions = {
   credentials: true
 };
 
-app.options("*", cors(corsOptions));
+app.use(cors(corsOptions)); // ✅ This applies CORS middleware
+app.options("*", cors(corsOptions)); // ✅ Preflight support
 
-// Request logging for debugging
+// ✅ Log each request
 app.use((req, res, next) => {
   console.log(`Request: ${req.method} ${req.url}`);
   console.log("Origin Header:", req.headers.origin);
   next();
 });
 
-// Body Parser
 app.use(express.json());
 
-// Routes
+// ✅ Routes
 app.use("/api/auth", authroute);
 app.use("/api/from", contactroute);
 app.use("/api/admin", adminRoute);
 
-// Error Middleware
+// ✅ Error Middleware
 app.use(errorMiddleware);
 
-// Start Server
+// ✅ Start Server
 const PORT = process.env.PORT || 5000;
-
 connectDb().then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
