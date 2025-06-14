@@ -73,8 +73,7 @@
 
 require('dotenv').config();
 const express = require("express");
-const cors = require("cors"); // ✅ Only once
-
+const cors = require("cors");
 const authroute = require("./router/auth-router");
 const contactroute = require("./router/contact-model");
 const adminRoute = require("./router/admin-router");
@@ -83,35 +82,20 @@ const errorMiddleware = require('./middlewares/error-middleware');
 
 const app = express();
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://heartfelt-griffin-946104.netlify.app",
-  "https://collegepoject-erpw.vercel.app"
-];
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+// ✅ CORS Configuration (temporary open for testing)
+app.use(cors({
+  origin: "*", // ⛔ Don't use * in production if you use cookies
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-};
+}));
 
-app.use(cors(corsOptions)); // ✅ This applies CORS middleware
-app.options("*", cors(corsOptions)); // ✅ Preflight support
-
-// ✅ Log each request
+// ✅ Request logging for debugging
 app.use((req, res, next) => {
   console.log(`Request: ${req.method} ${req.url}`);
   console.log("Origin Header:", req.headers.origin);
   next();
 });
 
+// ✅ Body Parser
 app.use(express.json());
 
 // ✅ Routes
@@ -124,6 +108,7 @@ app.use(errorMiddleware);
 
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
+
 connectDb().then(() => {
   app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
