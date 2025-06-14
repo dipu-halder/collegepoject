@@ -81,12 +81,28 @@ const connectDb = require("./utils/db");
 const errorMiddleware = require('./middlewares/error-middleware');
 
 const app = express();
+const cors = require("cors");
 
-// ✅ CORS Configuration (temporary open for testing)
-app.use(cors({
-  origin: "*", // ⛔ Don't use * in production if you use cookies
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://heartfelt-griffin-946104.netlify.app",
+  "https://collegepoject-erpw.vercel.app"
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-}));
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+};
+
+app.options("*", cors(corsOptions));
 
 // ✅ Request logging for debugging
 app.use((req, res, next) => {
