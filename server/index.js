@@ -4,60 +4,46 @@ const express = require("express")
 const app = express(); 
 const cors =require("cors")
 const authroute =require("./router/auth-router")
-const contactroute = require("./router/contact-router")
+const contactroute = require("./router/contact-model")
 const adminRoute = require("./router/admin-router")
 const connectDb = require("./utils/db");
 const errorMiddleware = require('./middlewares/error-middleware');
 
-// const corsOptions ={
-//    origin: [
-//     "http://localhost:5173",
-//     "https://heartfelt-griffin-946104.netlify.app",
-//    "https://collegepoject-erpw.vercel.app/",
+const corsOptions ={
+   origin: [
+    "http://localhost:5173",
+    "https://heartfelt-griffin-946104.netlify.app",
+   "https://collegepoject-erpw.vercel.app/",
 
-//   ],
-//    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
+  ],
+   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
 
-//     credentials: true // if you use cookies or auth headers
-// };
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://heartfelt-griffin-946104.netlify.app",
-  "https://collegepoject-erpw.vercel.app"
-];
-
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
-  credentials: true
+    credentials: true // if you use cookies or auth headers
 };
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); 
 
-// Middleware for logging
+app.use(cors(corsOptions));
+
+
+
+// app.use(cors(corsOptions));
 app.use((req, res, next) => {
-  console.log(`Request: ${req.method} ${req.url}`);
-  console.log("Origin Header:", req.headers.origin);
+  console.log("Request Origin:", req.headers.origin);
+  next();
+});  
+ 
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.url}`);
   next();
 });
-
-// Parse JSON body
 app.use(express.json());
 
-// Now add routes
 app.use("/api/auth", authroute);
-app.use("/api/from", contactroute);
-app.use("/api/admin", adminRoute);
+app.use("/api/from", contactroute)
+  
+app.use("/api/admin", adminRoute)
 
-// Error middleware
-app.use(errorMiddleware);
+app.use(errorMiddleware)
 
 const PORT = process.env.PORT || 5000;
 
