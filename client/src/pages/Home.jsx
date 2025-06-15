@@ -27,6 +27,7 @@ const HomePage = () => {
             <li><NavLink to="/order">Orders</NavLink></li>
             <li ><NavLink to="/contact">Contact Us</NavLink></li>
             <li><NavLink to="#">Suggestion</NavLink></li>
+            <li><NavLink to="/admin">admin</NavLink></li>
             {isLoggedin ? <li><NavLink to="/logout" >Logout</NavLink></li> :<><li><NavLink to="/signup" >Sign Up</NavLink></li></>}
             
             
