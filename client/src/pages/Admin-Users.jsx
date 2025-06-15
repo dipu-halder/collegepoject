@@ -11,7 +11,7 @@ export const AdminUsers = () => {
 
   const getAllUsersData = async () => {
     try {
-      const response = await fetch("https://tiffin-wala.onrender.com/api/admin/users", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users`, {
         method: "GET",
         headers: {
           Authorization: authorizationToken,
@@ -29,7 +29,7 @@ export const AdminUsers = () => {
     try {
         
    
-     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/users/delete/${id}`, {
+     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/users/delete/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: authorizationToken,

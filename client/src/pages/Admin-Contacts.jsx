@@ -10,7 +10,7 @@ export const AdminContacts =() =>{
     const AllgetContactData = async () =>{
         try {
         
-        const response = await fetch("https://tiffin-wala.onrender.com/api/admin/contacts",{
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/contacts`,{
             method: "GET",
             headers: {
                     Authorization: authorizationToken,
@@ -34,7 +34,7 @@ export const AdminContacts =() =>{
     const deleteContact = async(id) => {
         try {
             
-               const response = await fetch(`${process.env.REACT_APP_API_URL}/api/admin/contacts/delete/${id}`,{
+               const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/contacts/delete/${id}`,{
                 method: "DELETE",
                  headers: {
           Authorization: authorizationToken,
