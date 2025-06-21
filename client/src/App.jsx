@@ -13,13 +13,13 @@ import { AdminUsers } from "./pages/Admin-Users";
 import { AdminContacts } from "./pages/Admin-Contacts";
 import { AdminLayout } from "./components/layouts/Admin-layout";
 import AdminUpdate from "./pages/Admin-Update";
-// import Navbar from "./components/Navbar";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     <BrowserRouter>
    
-      {/* <Navbar /> */}
+      <Navbar />
 
     
       <Routes>

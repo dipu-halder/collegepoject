@@ -1,42 +1,41 @@
-import { useState } from "react";
-import { TfiAlignJustify } from "react-icons/tfi";
-import "./Navbar.css";
+import React, { useState } from 'react';
+import { FaShoppingCart, FaBars, FaTimes } from 'react-icons/fa';
+import './Navbar.css';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    setIsOpen(prev => {
+      const next = !prev;
+      document.body.classList.toggle('no-scroll', next);
+      return next;
+    });
   };
 
   return (
-    <div id="navbar">
-      <div className="nav1">
-        {/* Mobile Icon */}
-        <div className="mobile-menu-icon" onClick={toggleMenu}>
-          <TfiAlignJustify />
-        </div>
+    <header className="navbar">
+      <div ><img className="logo" src="/images/Logo-removeb1g.png" alt="tiffin wala" /></div>
 
-        {/* Logo */}
-        <div className="logo-container"></div>
-
-        {/* Menu */}
-        <ul className={`nav-links ${isMenuOpen ? "open" : ""}`}>
-          <li>
-            <a href="#">Home</a>
-          </li>
-          <li>
-            <a href="#">Menu</a>
-          </li>
-          <li>
-            <a href="#">About</a>
-          </li>
-          <li id="openSignupLink">
-            <a href="#">Signup</a>
-          </li>
-        </ul>
-      </div>
-    </div>
+      <nav className={`nav-links ${isOpen ? 'open' : ''}`}>
+         <button className="close-btn" onClick={toggleMenu}>✕</button>
+        <Link to="/" onClick={() => setIsOpen(false)}>Home</Link>
+        <Link to="/categories" onClick={() => setIsOpen(false)}>Categories</Link>
+        <Link to="#" onClick={() => setIsOpen(false)}>Orders</Link>
+        <Link to="/contact" onClick={() => setIsOpen(false)}>Contact Us</Link>
+        <Link to="#" onClick={() => setIsOpen(false)}>Suggestion</Link>
+        <Link to="/admin" onClick={() => setIsOpen(false)}>Admin</Link>
+        <Link to="/signup" onClick={() => setIsOpen(false)}>Sign Up</Link>
+      </nav>
+<Link to="/cart">
+      <div className="icons">
+        <FaShoppingCart className="icon cart-icon" />
+        <button className="icon menu-icon" onClick={toggleMenu}>
+          {isOpen ? <FaTimes /> : <FaBars />}
+        </button>
+      </div></Link>
+    </header>
   );
 };
 

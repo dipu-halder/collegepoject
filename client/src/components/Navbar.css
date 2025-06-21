@@ -1,48 +1,112 @@
-/* Add this to your CSS */
+/* Reset + prevent X-scroll */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: sans-serif;
+}
 
-.mobile-menu-icon {
-  display: none;
-  font-size: 30px;
-  color: white;
-  margin-left: 20px;
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* Navbar container */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+ 
+  background: linear-gradient(135deg, #ffb8b8, #f8db00);
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
+
+/* Logo */
+.logo {
+ width: 7.5rem; ;
+}
+
+/* Desktop nav links */
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 550;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover {
+  color: #ff6600;
+}
+
+/* Icon styles */
+.icons {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.cart-icon {
+  font-size: 1.25rem;
   cursor: pointer;
 }
 
-@media (max-width: 768px) {
-  .nav1 {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 10px;
-  }
+.menu-icon {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+.close-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  align-self: flex-end;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
 
-  .logo-container {
-    margin: 10px 0;
+@media (max-width: 768px) {
+  .close-btn {
+    display: block;
+  }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block;
   }
 
   .nav-links {
-    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 250px;
+    background: #fff;
     flex-direction: column;
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    margin-left: 0;
+    padding: 1.5rem 1rem;
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    overflow-y: auto;
+    z-index: 999;
   }
 
   .nav-links.open {
-    display: flex;
-  }
-
-  .nav-links li {
-    width: 100%;
-    text-align: left;
+    transform: translateX(0);
   }
 
   .nav-links a {
-    padding: 10px 20px;
-    display: block;
-    width: 100%;
-  }
-
-  .mobile-menu-icon {
-    display: block;
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
   }
 }
