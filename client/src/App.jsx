@@ -1,6 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 
+ import SUGGESTION from "./pages/Suggestion";
+ //-> to import your jsx code
+import Dietary from "./pages/DietaryPreference";
+
 import Cart from "./pages/Cart";          
 import Contact from "./pages/ContactModal";
 import Categories from "./pages/CategoriesPage";
@@ -24,6 +28,8 @@ function App() {
     
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/Suggestion" element={<SUGGESTION/>} /> 
+        <Route path="/DietaryPreference" element={<Dietary/>} /> 
         <Route path="/cart" element={<Cart />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/contact" element={<Contact />} />
