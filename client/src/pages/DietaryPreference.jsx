@@ -2,41 +2,47 @@ import React from 'react'
 import "../Css/Suggestion.css";    
 // -> Import Css Like This
 
-// import { food, manu } from "../data/fooditem";
+import { food, manu } from "../data/fooditem";
 import "../Css/Categories.css";
 // import { IonIcon } from "@ionic/react";
 // import {  cartOutline } from "ionicons/icons";
 // import { Link } from "react-router-dom";
 
 const DietaryPreference = () => {
+  
+  const glutenFreeItems = food.filter(item => item.type === "veg");
+  const Pescatarian = food.filter(item => item.type ==="non-veg")
   return (
     <>
-    <div class="parent-2 p">
-   <h1>Gluten Free</h1>
-   <div className="Wrapper-box1 y">
-   <div class="Box1 x"></div>
-   <div class="Box1 x"></div>
-   <div class="Box1 x"></div>
-   <div class="Box1 x"></div>
-   <div class="Box1 x"></div>
-   <div class="Box1 x"></div>
-   <div class="Box1 x"></div>
-   <div class="Box1 x"></div>
-   </div>
-   </div>
+<div className="parent-2 p">
+        <h1>Gluten Free</h1>
+       <div className="Wrapper-box1 y">
+        {glutenFreeItems.map((item) => (
+          <div className="Box1 x" key={item.id}>
+            <img src={item.img} alt={item.name} className="food-img" />
+            <h3>{item.name}</h3>
+            <p>{item.description}</p>
+            <p>Price: ₹{item.pices}</p>
+            <p>Rating: ⭐{item.rating} | ⏱ {item.time} min</p>
+          </div>
+        ))}
+      </div>
+      </div>
+
 
    <div class="parent-3 p">
    <h1>Pescatarian</h1>
-   <div className="Wrapper-box2 y">
-   <div class="Box2 x"></div>
-   <div class="Box2 x"></div>
-   <div class="Box2 x"></div>
-   <div class="Box2 x"></div>
-   <div class="Box2 x"></div>
-   <div class="Box2 x"></div>
-   <div class="Box2 x"></div>
-   <div class="Box2 x"></div>
-   </div>
+          <div className="Wrapper-box1 y">
+        {glutenFreeItems.map((item) => (
+          <div className="Box1 x" key={item.id}>
+            <img src={item.img} alt={item.name} className="food-img" />
+            <h3>{item.name}</h3>
+            <p>{item.description}</p>
+            <p>Price: ₹{item.pices}</p>
+            <p>Rating: ⭐{item.rating} | ⏱ {item.time} min</p>
+          </div>
+        ))}
+      </div>
    </div>
 
 
