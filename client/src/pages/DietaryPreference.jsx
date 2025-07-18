@@ -1,94 +1,69 @@
-import React from 'react'
-import "../Css/Suggestion.css";    
-// -> Import Css Like This
-
-import { food, manu } from "../data/fooditem";
+import React, { useState } from 'react';
+import "../Css/Suggestion.css";
 import "../Css/Categories.css";
-// import { IonIcon } from "@ionic/react";
-// import {  cartOutline } from "ionicons/icons";
-// import { Link } from "react-router-dom";
+import { food } from "../data/fooditem";
 
 const DietaryPreference = () => {
-  
   const glutenFreeItems = food.filter(item => item.type === "veg");
-  const Pescatarian = food.filter(item => item.type ==="non-veg")
+  const pescatarianItems = food.filter(item => item.type === "non-veg");
+
+  const [expandedId, setExpandedId] = useState(null);
+
+  const handleToggle = (id) => {
+    setExpandedId(expandedId === id ? null : id);
+  };
+
   return (
     <>
-<div className="parent-2 p">
+   
+      <div className="parent-2 p">
         <h1>Gluten Free</h1>
-       <div className="Wrapper-box1 y">
-        {glutenFreeItems.map((item) => (
-          <div className="Box1 x" key={item.id}>
-            <img src={item.img} alt={item.name} className="food-img" />
-            <h3>{item.name}</h3>
-            <p>{item.description}</p>
-            <p>Price: ₹{item.pices}</p>
-            <p>Rating: ⭐{item.rating} | ⏱ {item.time} min</p>
-          </div>
-        ))}
+        <div className="Wrapper-box1 y">
+          {glutenFreeItems.map((item) => (
+            <div
+              className={`Box1 x ${expandedId === item.id ? "expanded" : ""}`}
+              key={item.id}
+              onClick={() => handleToggle(item.id)}
+            >
+              <img src={item.img} alt={item.name} className="food-img" />
+              <h3>{item.name}</h3>
+              {expandedId === item.id && (
+                <div className="details">
+                  <p>{item.description}</p>
+                  <p>Price: ₹{item.pices}</p>
+                  <p>Rating: ⭐{item.rating} | ⏱ {item.time} min</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
-      </div>
 
-
-   <div class="parent-3 p">
-   <h1>Pescatarian</h1>
-          <div className="Wrapper-box1 y">
-        {glutenFreeItems.map((item) => (
-          <div className="Box1 x" key={item.id}>
-            <img src={item.img} alt={item.name} className="food-img" />
-            <h3>{item.name}</h3>
-            <p>{item.description}</p>
-            <p>Price: ₹{item.pices}</p>
-            <p>Rating: ⭐{item.rating} | ⏱ {item.time} min</p>
-          </div>
-        ))}
-      </div>
-   </div>
-
-
-   <div class="parent-4 p">
-   <h1>Pescatarian</h1>
-   <div className="Wrapper-box3 y">
-   <div class="Box3 x"></div>
-   <div class="Box3 x"></div>
-   <div class="Box3 x"></div>
-   <div class="Box3 x"></div>
-   <div class="Box3 x"></div>
-   <div class="Box3 x"></div>
-   <div class="Box3 x"></div>
-   <div class="Box3 x"></div>
-   </div>
-   </div>
-
-   <div class="parent-5 p">
-   <h1>Pescatarian</h1>
-   <div className="Wrapper-box4 y">
-   <div class="Box4 x"></div>
-   <div class="Box4 x"></div>
-   <div class="Box4 x"></div>
-   <div class="Box4 x"></div>
-   <div class="Box4 x"></div>
-   <div class="Box4 x"></div>
-   <div class="Box4 x"></div>
-   <div class="Box4 x"></div>
-   </div>
-   </div>
-
-
-   <div class="parent-6 p">
-   <h1>Pescatarian</h1>
-   <div className="Wrapper-box5 y">
-   <div class="Box5 x"></div>
-   <div class="Box5 x"></div>
-   <div class="Box5 x"></div>
-   <div class="Box5 x"></div>
-   <div class="Box5 x"></div>
-   <div class="Box5 x"></div>
-   <div class="Box5 x"></div>
-   <div class="Box5 x"></div>
-   </div>
-   </div>
-  </>
+      <div className="parent-3 p">
+        <h1>Pescatarian</h1>
+        <div className="Wrapper-box1 y">
+          {pescatarianItems.map((item) => (
+            <div
+              className={`Box1 x ${expandedId === item.id ? "expanded" : ""}`}
+              key={item.id}
+              onClick={() => handleToggle(item.id)}
+            >
+              <img src={item.img} alt={item.name} className="food-img" />
+              <h3>{item.name}</h3>
+              {expandedId === item.id && (
+                <div className="details">
+                  <p>{item.description}</p>
+                  <p>Price: ₹{item.pices}</p>
+                  <p>Rating: ⭐{item.rating} | ⏱ {item.time} min</p>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div> 
+      
+    </>
   );
-}
-export default DietaryPreference
+};
+
+export default DietaryPreference;
