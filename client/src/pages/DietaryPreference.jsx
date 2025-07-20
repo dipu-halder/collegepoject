@@ -4,18 +4,32 @@ import "../Css/Categories.css";
 import { food } from "../data/fooditem";
 
 const DietaryPreference = () => {
-  const glutenFreeItems = food.filter(item => item.type === "veg");
-  const pescatarianItems = food.filter(item => item.type === "non-veg");
-
+  const [items] = useState(food);
+  const [cart, setCart] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
+
+  const glutenFreeItems = items.filter(item => item.type === "veg");
+  const pescatarianItems = items.filter(item => item.type === "non-veg");
 
   const handleToggle = (id) => {
     setExpandedId(expandedId === id ? null : id);
   };
 
+  const handleAddToCart = (item) => {
+    const newItem = {
+      title: item.name,
+      description: item.description,
+      image: item.img,
+      price: parseInt(item.pices),
+      quantity: 1,
+      tag: item.type,
+    };
+    setCart([...cart, newItem]);
+    alert(`${item.name} added to cart`);
+  };
+
   return (
     <>
-   
       <div className="parent-2 p">
         <h1>Gluten Free</h1>
         <div className="Wrapper-box1 y">
@@ -32,6 +46,12 @@ const DietaryPreference = () => {
                   <p>{item.description}</p>
                   <p>Price: ₹{item.pices}</p>
                   <p>Rating: ⭐{item.rating} | ⏱ {item.time} min</p>
+                  <button className="add-to-cart" onClick={(e) => {
+                    e.stopPropagation(); // prevent collapse
+                    handleAddToCart(item);
+                  }}>
+                    Add to cart
+                  </button>
                 </div>
               )}
             </div>
@@ -54,14 +74,19 @@ const DietaryPreference = () => {
                 <div className="details">
                   <p>{item.description}</p>
                   <p>Price: ₹{item.pices}</p>
-                  <p>Rating: ⭐{item.rating} | ⏱ {item.time} min</p>
+                      <button className="add-to-cart" onClick={(e) => {
+                    e.stopPropagation(); // prevent collapse
+                    handleAddToCart(item);
+                  }}>
+                    Add to cart
+                  </button>
                 </div>
+
               )}
             </div>
           ))}
         </div>
-      </div> 
-      
+      </div>
     </>
   );
 };
