@@ -17,6 +17,7 @@ export const food = [
     rating: "4.5",
     time: "30",
     type: "veg",
+    diet:"GlutenFree",
     pices: "267",
   },
   {
@@ -27,6 +28,7 @@ export const food = [
     rating: "4.2",
     time: "20",
     type: "veg",
+    diet:"Pescaterian",
     pices: "299",
   },
   {
@@ -37,6 +39,7 @@ export const food = [
     rating: "4.2",
     time: "20",
     type: "non-veg",
+    diet:"GlutenFree",
     pices: "299",
   },
   {
@@ -47,6 +50,7 @@ export const food = [
     rating: "4.2",
     time: "20",
     type: "veg",
+    diet:"GlutenFree",
     pices: "299",
   },
   {
@@ -67,6 +71,7 @@ export const food = [
     rating: "4.2",
     time: "20",
     type: "veg",
+    diet:"GlutenFree",
     pices: "299",
   },
   {
@@ -77,6 +82,7 @@ export const food = [
     rating: "4.2",
     time: "20",
     type: "sweet",
+    diet:"Pescaterian",
     pices: "299",
   },
   {
@@ -97,6 +103,7 @@ export const food = [
     rating: "4.2",
     time: "20",
     type: "veg",
+    diet:"GlutenFree",
     pices: "299",
   },
   {
@@ -107,6 +114,7 @@ export const food = [
     rating: "4.2",
     time: "20",
     type: "veg",
+    diet:"Pescaterian",
     pices: "299",
   },
 
@@ -118,6 +126,7 @@ export const food = [
     rating: "4.0",
     time: "20",
     type: "Sweet",
+    diet:"GlutenFree",
     pices: "299",
   },
   {
@@ -128,6 +137,7 @@ export const food = [
     rating: "4.0",
     time: "20",
     type: "non-veg",
+    diet:"Pescaterian",
     pices: "399",
   },
   
@@ -140,6 +150,7 @@ export const food = [
     rating: "4.0",
     time: "20",
     type: "sweet",
+    diet:"GlutenFree",
     pices: "399",
   },
   {
@@ -160,6 +171,7 @@ export const food = [
     rating: "4.5",
     time: "20",
     type: "veg",
+    diet:"GlutenFree",
     pices: "199",
   },
   {
@@ -190,6 +202,7 @@ export const food = [
     rating: "4.5",
     time: "20",
     type: "veg",
+    diet:"GlutenFree",
     pices: "209",
   },
   {
@@ -210,6 +223,7 @@ export const food = [
     rating: "4.5",
     time: "20",
     type: "non-veg",
+    diet:"Pescaterian",
     pices: "169",
   },
   {
@@ -250,6 +264,7 @@ export const food = [
     rating: "4.5",
     time: "20",
     type: "veg",
+    diet:"Pescaterian",
     pices: "209",
   },
   {
@@ -260,6 +275,7 @@ export const food = [
     rating: "4.5",
     time: "20",
     type: "non-veg",
+    diet:"Pescaterian",
     pices: "127",
   },
   {
@@ -270,6 +286,7 @@ export const food = [
     rating: "4.5",
     time: "20",
     type: "veg",
+    diet:"Pescaterian",
     pices: "178",
   },
 
@@ -301,6 +318,7 @@ export const food = [
     rating: "4.5",
     time: "20",
     type: "veg",
+    diet:"Pescaterian",
     pices: "178",
   },
   {
@@ -311,6 +329,7 @@ export const food = [
     rating: "4.5",
     time: "20",
     type: "veg",
+    diet:"Pescaterian",
     pices: "145",
   },
   {
@@ -321,6 +340,7 @@ export const food = [
     rating: "4.5",
     time: "20",
     type: "non-veg",
+    diet:"GlutenFree",
     pices: "121",
   },
   {
@@ -331,6 +351,7 @@ export const food = [
     rating: "4.5",
     time: "20",
     type: "veg",
+    diet:"Pescaterian",
     pices: "60",
   },
   {
@@ -341,6 +362,7 @@ export const food = [
     rating: "4.5",
     time: "20",
     type: "veg",
+    diet:"Pescaterian",
     pices: "40",
   },
 ];

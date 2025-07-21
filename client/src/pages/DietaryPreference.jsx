@@ -8,8 +8,8 @@ const DietaryPreference = () => {
   const [cart, setCart] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
 
-  const glutenFreeItems = items.filter(item => item.type === "veg");
-  const pescatarianItems = items.filter(item => item.type === "non-veg");
+  const glutenFreeItems = items.filter(item => item.diet === "GlutenFree");
+  const pescatarianItems = items.filter(item => item.diet === "Pescaterian");
 
   const handleToggle = (id) => {
     setExpandedId(expandedId === id ? null : id);
