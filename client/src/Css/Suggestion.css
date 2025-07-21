@@ -24,7 +24,7 @@
 
 .suggestion-box img {
   width: 100%;
-  height: auto;
+  height: 80%;
   object-fit: cover;
   border-bottom: 4px solid orange;
 }
@@ -41,7 +41,11 @@
   margin-top: 8px;
   line-height: 1.4;
 }
-
+/* .Fixed-img{
+  height: 200px;
+  width: 200px;
+  object-fit: cover;
+} */
 
 /* dietrypreference */
 * {
