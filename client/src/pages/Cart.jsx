@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../Css/cart.css"; 
 import { useNavigate } from "react-router-dom";
 
+
 const CartPage = () => {
   const [cart, setCart] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
@@ -106,7 +107,7 @@ const CartPage = () => {
               <p className="total-price" id="totalPrice">₹{totalAmount}</p>
             </div>
          <div className="order-button">
-  <button onClick={() => navigate("/order")}>Order</button>
+ <button onClick={() => navigate("/OrderPage")}>Order</button>
 </div>
           </div>
         </div>

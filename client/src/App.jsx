@@ -10,7 +10,7 @@ import Contact from "./pages/ContactModal";
 import Categories from "./pages/CategoriesPage";
 import Signup from "./pages/SignupModal";
 import Login from "./pages/LoginModal";
-// import OrderPage from "./pages/OrderPage";
+import OrderPage from "./pages/OrderPage";
 import Error from "./pages/Error";
 import Logout from "./pages/Logout";
 import { AdminUsers } from "./pages/Admin-Users";
@@ -28,6 +28,7 @@ function App() {
     
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/OrderPage" element={<OrderPage />} />
         <Route path="/Suggestion" element={<SUGGESTION/>} /> 
         <Route path="/DietaryPreference" element={<Dietary/>} /> 
         <Route path="/cart" element={<Cart />} />

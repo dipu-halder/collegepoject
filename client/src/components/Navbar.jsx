@@ -22,7 +22,7 @@ const Navbar = () => {
          <button className="close-btn" onClick={toggleMenu}>✕</button>
         <Link to="/" onClick={() => setIsOpen(false)}>Home</Link>
         <Link to="/categories" onClick={() => setIsOpen(false)}>Categories</Link>
-        <Link to="#" onClick={() => setIsOpen(false)}>Orders</Link>
+        <Link to="OrderPage" onClick={() => setIsOpen(false)}>Orders</Link>
         <Link to="/contact" onClick={() => setIsOpen(false)}>Contact Us</Link>
         <Link to="/Suggestion" onClick={() => setIsOpen(false)}>Suggestion</Link>
         <Link to="/admin" onClick={() => setIsOpen(false)}>Admin</Link>
