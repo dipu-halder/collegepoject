@@ -1,26 +1,26 @@
-const mongoose = require('mongoose');
+// models/order-model.js
+const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
-  name: String,
-  mobile: String,
-  email: String,
-  address: String,
-  city: String,
-  state: String,
-  totalAmount: Number,
-  totalQuantity: Number,
-  cartItems: [
+  items: [
     {
       title: String,
       price: Number,
       quantity: Number,
       image: String,
-    }
+    },
   ],
+  total: Number,
+  user: {
+    name: String,
+    email: String,
+    address: String,
+  },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-module.exports = mongoose.model('Order', orderSchema);
+const Order = mongoose.model("Order", orderSchema);
+module.exports = Order;

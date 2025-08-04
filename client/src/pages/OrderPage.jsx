@@ -13,7 +13,6 @@ const OrderPage = () => {
   });
 
   const [cartItems, setCartItems] = useState([]);
-  
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalQuantity, setTotalQuantity] = useState(0);
 
@@ -40,69 +39,56 @@ const OrderPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const isFormValid = Object.values(formData).every((v) => v.trim() !== '');
     if (!isFormValid) return alert('Please fill all fields');
-
     if (cartItems.length === 0) return alert('Cart is empty!');
 
     const orderData = {
-      ...formData,
+      userInfo: {
+        name: formData.name,
+        email: formData.email,
+        address: formData.address,
+      },
       cartItems,
       totalAmount,
-      totalQuantity,
     };
+
     fetch("http://localhost:5000/api/order", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify(orderData),
-})
-  .then((res) => {
-    if (!res.ok) throw new Error("Order failed");
-    return res.json();
-  })
-  .then((data) => {
-  
-    localStorage.removeItem("cartItems");
-    setCartItems([]);
-    setFormData({
-      name: '',
-      mobile: '',
-      email: '',
-      address: '',
-      city: '',
-      state: '',
-    });
-  })
-  .catch((error) => {
-    console.error("Order failed:", error);
-    alert("Something went wrong. Please try again.");
-  });
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(orderData),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Order failed");
+        return res.json();
+      })
+      .then((data) => {
+        toast.success("Order placed successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+        });
 
-
-    console.log("Order Placed:", orderData);
-     toast.success("Order placed successfully!", {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              theme: "colored",
-            });
-
-    // You can also clear localStorage and reset form
-    localStorage.removeItem("cartItems");
-    setCartItems([]);
-    setFormData({
-      name: '',
-      mobile: '',
-      email: '',
-      address: '',
-      city: '',
-      state: '',
-    });
+        localStorage.removeItem("cartItems");
+        setCartItems([]);
+        setFormData({
+          name: '',
+          mobile: '',
+          email: '',
+          address: '',
+          city: '',
+          state: '',
+        });
+      })
+      .catch((error) => {
+        console.error("Order failed:", error);
+        alert("Something went wrong. Please try again.");
+      });
   };
 
   return (
@@ -122,7 +108,6 @@ const OrderPage = () => {
           </select>
           <select name="state" value={formData.state} onChange={handleChange}>
             <option value="">Select State</option>
-            <option value="Maharashtra">howrah</option>
             <option value="West Bengal">West Bengal</option>
             <option value="Delhi">Delhi</option>
           </select>
@@ -137,19 +122,14 @@ const OrderPage = () => {
         ) : (
           <>
             {cartItems.map((item, index) => (
-  <div className="cart-item" key={index}>
-    <img
-      src={item.image || "/fallback.jpg"} // fallback if image missing
-      alt={item.title}
-      className="cart-img"
-    />
-    <div className="cart-item-details">
-      <div className="cart-item-title">{item.title} × {item.quantity}</div>
-      <div className="cart-item-price">₹{item.price * item.quantity}</div>
-    </div>
-  </div>
-))}
-
+              <div className="cart-item" key={index}>
+                <img src={item.image || "/fallback.jpg"} alt={item.title} className="cart-img" />
+                <div className="cart-item-details">
+                  <div className="cart-item-title">{item.title} × {item.quantity}</div>
+                  <div className="cart-item-price">₹{item.price * item.quantity}</div>
+                </div>
+              </div>
+            ))}
             <hr />
             <div className="cart-total">
               <strong>Total: ₹{totalAmount}</strong><br />
@@ -158,6 +138,8 @@ const OrderPage = () => {
           </>
         )}
       </div>
+
+      <ToastContainer />
     </div>
   );
 };
