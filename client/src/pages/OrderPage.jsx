@@ -54,7 +54,7 @@ const OrderPage = () => {
       totalAmount,
     };
 
-    fetch("http://localhost:5000/api/order", {
+    fetch(`${import.meta.env.VITE_API_URL}/api/order`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData),
