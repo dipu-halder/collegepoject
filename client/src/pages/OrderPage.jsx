@@ -54,7 +54,7 @@ const OrderPage = () => {
       totalAmount,
     };
 
-    fetch(`https://tiffin-wala.onrender.com/api/order`, {
+    fetch("http://localhost:5000/api/order", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData),
