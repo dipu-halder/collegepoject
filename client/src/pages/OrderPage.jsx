@@ -54,7 +54,7 @@ const OrderPage = () => {
       totalAmount,
     };
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/order`, {
+    fetch(`https://tiffin-wala.onrender.com/api/order`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(orderData),
