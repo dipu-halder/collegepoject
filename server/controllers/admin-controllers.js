@@ -177,8 +177,9 @@ const deleteContactBYId = async (req, res, next) => {
 const getAllOrders = async (req, res, next) => {
   try {
     const orders = await Order.find().sort({ createdAt: -1 });
-
-    // ✅ Always send 200, even if no orders
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({ message: "No orders found" });
+    }
     return res.status(200).json(orders);
   } catch (error) {
     next(error);
