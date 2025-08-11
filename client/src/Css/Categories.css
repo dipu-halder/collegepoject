@@ -123,6 +123,7 @@ body {
      border-bottom-left-radius: 25px;
      border-top-left-radius: 25px;
      border: transparent;
+     background-color: aqua;
    }
    #searchBtn{
      width: 5rem;
