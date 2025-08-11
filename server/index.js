@@ -69,7 +69,7 @@ const authroute = require("./router/auth-router");
 const contactroute = require("./router/contact-router");
 const adminRoute = require("./router/admin-router");
 const orderRoute = require("./router/order-router"); // ✅ Corrected path
-const adminOrderRoute = require("./router/admin-order-router.js");
+// const adminOrderRoute = require("./router/admin-order-router.js");
 const connectDb = require("./utils/db");
 const errorMiddleware = require('./middlewares/error-middleware');
 
@@ -129,7 +129,7 @@ app.use("/api/auth", authroute);
 app.use("/api/from", contactroute);
 app.use("/api/admin", adminRoute);
 app.use("/api/order", orderRoute); // ✅ Order routes with socket support
-app.use("/api/admin", adminOrderRoute);
+// app.use("/api/admin", adminOrderRoute);
 
 app.use(errorMiddleware);
 

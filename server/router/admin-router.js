@@ -27,4 +27,9 @@ router.route('/users/delete/:id').delete(authMiddleware, adminMiddleware, adminC
 router.route('/contacts').get(authMiddleware, adminMiddleware, adminController.getAllcontacts);
 router.route('/contacts/delete/:id').delete(authMiddleware, adminMiddleware, adminController.deleteContactBYId);
 
+
+// ✅ New routes for orders
+router.route('/orders').get(authMiddleware, adminMiddleware,adminController.getAllOrders);
+
+router.patch('/orders/:id/status',authMiddleware, adminMiddleware,  adminController.updateOrderStatus);
 module.exports = router;
