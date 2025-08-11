@@ -19,6 +19,10 @@ import { AdminLayout } from "./components/layouts/Admin-layout";
 import AdminUpdate from "./pages/Admin-Update";
 import Navbar from "./components/Navbar";
 
+import OrderTrackingPage from "./pages/Tracking Page";
+import { AdminOrders } from "./pages/AdminOrders";
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -28,6 +32,7 @@ function App() {
     
       <Routes>
         <Route path="/" element={<Home />} />
+        
         <Route path="/OrderPage" element={<OrderPage />} />
         <Route path="/Suggestion" element={<SUGGESTION/>} /> 
         <Route path="/DietaryPreference" element={<Dietary/>} /> 
@@ -39,6 +44,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="*" element={<Error />} />
+          
+           <Route path="/track/:orderId" element={<OrderTrackingPage />} />
 
          <Route path="/admin" element={<AdminLayout/>}>
           <Route path='users' element={<AdminUsers/>} />
@@ -46,6 +53,7 @@ function App() {
       
          <Route path="/admin/users/:id/edit" element={<AdminUpdate />} />
           <Route path='contacts' element={<AdminContacts/>} />
+          <Route path="orders" element={<AdminOrders />} />
         </Route>
       </Routes>
     </BrowserRouter>

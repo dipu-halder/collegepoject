@@ -1,0 +1,49 @@
+.admin_orders-section {
+  padding: 25px;
+  background: #eef2f7;
+}
+
+.admin_orders-section h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  color: #2d3436;
+}
+
+.admin_orders-section table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  box-shadow: 0px 4px 15px rgba(0,0,0,0.05);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.admin_orders-section th {
+  background-color: #4a90e2;
+  color: #fff;
+  padding: 14px 16px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin_orders-section td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.admin_orders-section tr:hover {
+  background-color: #f4f9ff;
+  transition: 0.2s ease-in-out;
+}
+
+.admin_orders-section select {
+  padding: 6px 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.admin_orders-section option {
+  background: #fff;
+}
