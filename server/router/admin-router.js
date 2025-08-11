@@ -30,6 +30,7 @@ router.route('/contacts/delete/:id').delete(authMiddleware, adminMiddleware, adm
 
 // ✅ New routes for orders
 router.route('/orders').get(authMiddleware, adminMiddleware,adminController.getAllOrders);
+router.route('/orders/:id/status').patch(authMiddleware, adminMiddleware,  adminController.updateOrderStatus);
 
-router.patch('/orders/:id/status',authMiddleware, adminMiddleware,  adminController.updateOrderStatus);
+
 module.exports = router;
