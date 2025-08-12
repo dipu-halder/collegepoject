@@ -14,7 +14,8 @@ export const AdminOrders = () => {
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/admin/orders`,
-        { headers: { Authorization: authorizationToken } }
+        {  method: "GET",
+           headers: { Authorization: authorizationToken } }
       );
       const data = await res.json();
       setOrders(data);
