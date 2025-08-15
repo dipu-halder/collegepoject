@@ -173,36 +173,90 @@ const deleteContactBYId = async (req, res, next) => {
 
 // ======================= ORDERS =======================
 
-// Get all orders
+// ✅ Get All Orders (Admin)
 const getAllOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find().sort({ createdAt: -1 });
+    const orders = await Order.find()
+      .sort({ createdAt: -1 })
+      .populate("user", "name email mobile address"); // Keep user data if exists
+
     if (!orders || orders.length === 0) {
       return res.status(404).json({ message: "No orders found" });
     }
-    return res.status(200).json(orders);
+
+    // ✅ Make sure to include both populated user and customer form data
+    const formattedOrders = orders.map(order => ({
+      _id: order._id,
+      items: order.items,
+      total: order.total,
+      status: order.status,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
+
+      // User data if logged in
+      user: order.user ? {
+        name: order.user.name,
+        email: order.user.email,
+        mobile: order.user.mobile,
+        address: order.user.address
+      } : null,
+
+      // Always include form data
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      customerPhone: order.customerPhone,
+      customerAddress: order.customerAddress
+    }));
+
+    return res.status(200).json(formattedOrders);
+
   } catch (error) {
     next(error);
   }
 };
 
-// Update order status
+// ✅ Update Order Status
 const updateOrderStatus = async (req, res, next) => {
   try {
     const { status } = req.body;
+
     const order = await Order.findByIdAndUpdate(
       req.params.id,
       { status },
       { new: true }
-    );
+    ).populate("user", "  name email mobile address");
 
     if (!order) return res.status(404).json({ message: "Order not found" });
 
-    return res.status(200).json(order);
+    return res.status(200).json({
+      _id: order._id,
+      items: order.items,
+      total: order.total,
+      status: order.status,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
+
+      user: order.user ? {
+         
+        name: order.user.name,
+        email: order.user.email,
+        mobile: order.user.mobile,
+        address: order.user.address
+      } : null,
+
+      customerName: order.customerName,
+      customerEmail: order.customerEmail,
+      customerPhone: order.customerPhone,
+      customerAddress: order.customerAddress
+    });
+
   } catch (error) {
     next(error);
   }
 };
+
+
+
 
 // Export everything
 module.exports = {

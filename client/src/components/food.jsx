@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { food } from "../data/fooditem";
 import "./food.css";
-import { IonIcon } from "@ionic/react";
-import { cartOutline } from "ionicons/icons";
 import { Link } from "react-router-dom";
 
 const Food = () => {
@@ -12,7 +10,8 @@ const Food = () => {
     const newItem = {
       title: item.name,
       description: item.description,
-      image: item.img,
+      // ✅ Categories & Food me same logic rakho
+      image: item.img.startsWith("/") ? item.img : `/${item.img}`,
       price: parseInt(item.pices),
       quantity: 1,
       tag: item.type,
@@ -34,7 +33,6 @@ const Food = () => {
     <div className="categories-page">
       <p className="section-title">menu</p>
 
-      {/* Food Cards */}
       <div className="cards" id="cardContainer">
         {items.map((item, idx) => (
           <div className="card" key={idx}>
@@ -56,14 +54,13 @@ const Food = () => {
         ))}
       </div>
 
-      {/* More Food Button */}
       <div className="more-btn-wrapper">
-      <Link to="categories"><button  className="more-food-btn"> More Food Items</button></Link>  
+        <Link to="categories">
+          <button className="more-food-btn">More Food Items</button>
+        </Link>  
       </div>
     </div>
   );
 };
 
 export default Food;
-
-

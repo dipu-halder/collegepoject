@@ -1,37 +1,59 @@
 // backend/controllers/orderController.js
-const Order = require('../models/Order');
+const Order = require("../models/Order");
 
-exports.createOrder = async (req, res) => {
+const createOrder = async (req, res) => {
   try {
-    const { userInfo, cartItems, totalAmount } = req.body;
-    if (!cartItems || cartItems.length === 0) return res.status(400).json({ message: "Cart empty" });
+    const { items, total, customerName, customerPhone, customerAddress, customerEmail } = req.body;
+
+    if (!items || items.length === 0) {
+      return res.status(400).json({ message: "No items in the order" });
+    }
 
     const order = new Order({
-      items: cartItems,
-      total: totalAmount,
-      user: userInfo
+      items,
+      total,
+      user:  req.user ? req.user._id : null,  // ✅ token se user ka id aayega
+      customerName,
+      customerPhone,
+      customerAddress,
+      customerEmail
     });
 
     await order.save();
-
-    const io = req.app.get('io');
-    if (io) io.emit('orderCreated', order);
-
-    return res.status(201).json({ message: 'Order placed', orderId: order._id });
+    res.status(201).json(order);
   } catch (err) {
-    console.error('createOrder error:', err);
-    return res.status(500).json({ message: 'Server error' });
+    console.error("Order creation error:", err);
+    res.status(500).json({ message: err.message });
   }
 };
-
-exports.getOrderById = async (req, res) => {
+// ✅ Get User Orders (Order History)
+const getUserOrders = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id).lean();
-    if (!order) return res.status(404).json({ message: 'Order not found' });
-    return res.json(order);
-  } catch (err) {
-    console.error('getOrderById error:', err);
-    return res.status(500).json({ message: 'Server error' });
+    const orders = await Order.find({ user: req.user._id })
+      .sort({ createdAt: -1 })
+      .populate("user", "name email mobile address");
+
+    // No need to remove image — items array stays intact
+    res.json(orders);
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).json({ message: "Error fetching orders" });
   }
 };
 
+// ✅ Get Single Order by ID
+const getOrderById = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id)
+      .populate("user", "name email mobile address");
+    if (!order) return res.status(404).json({ message: "Order not found" });
+    res.json(order);
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    res.status(500).json({ message: "Error fetching order" });
+  }
+};
+
+
+
+module.exports = { createOrder, getUserOrders, getOrderById };

@@ -132,59 +132,88 @@
 //     </div>
 //   );
 // };
-
-
-
 // frontend/src/pages/OrderPage.jsx
 import React, { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import '../Css/OrderPage.css';
+import { useNavigate } from "react-router-dom";
 
 export default function OrderPage() {
   const [form, setForm] = useState({ name: '', email: '', mobile: '', address: '' });
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
+  // Load cart from localStorage
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem('cartItems')) || [];
-    setCartItems(data);
-    const totalAmount = data.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 1), 0);
-    setTotal(totalAmount);
+    const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+    setCartItems(storedCart);
+    let sum = 0;
+    storedCart.forEach(item => sum += (Number(item.price) || Number(item.pices) || 0) * (Number(item.quantity) || 1));
+    setTotal(sum);
   }, []);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
+  // Normalize cart data before sending to backend
+  const normalizeForBackend = (items) => items.map(i => ({
+    name: i.name || i.title || "Unknown",
+    price: Number(i.price ?? i.pices ?? 0),
+    quantity: Number(i.quantity ?? i.qty ?? 1),
+    img: i.img || i.image || i.imagePath || ""
+  }));
+
   const placeOrder = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.mobile || !form.address || cartItems.length === 0) {
-      toast.error('Please fill required fields and ensure cart is not empty');
+
+    if (cartItems.length === 0) {
+      toast.error("Your cart is empty!");
       return;
     }
 
-    const payload = {
-      userInfo: { name: form.name, email: form.email, mobile: form.mobile, address: form.address },
-      cartItems,
-      totalAmount: total,
-    };
-
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Order failed');
+      const itemsToSend = normalizeForBackend(cartItems);
+      const computedTotal = itemsToSend.reduce((s, it) => s + (it.price || 0) * (it.quantity || 0), 0);
 
-      const orderId = data.orderId;
-      localStorage.setItem('orderId', orderId);
-      toast.success('Order placed! ID: ' + orderId);
-      window.location.href = `/track/${orderId}`;
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token && { "Authorization": `Bearer ${token}` }) // Pass JWT to backend
+        },
+        body: JSON.stringify({
+          customerName: form.name,
+          customerPhone: form.mobile,
+          customerAddress: form.address,
+          customerEmail: form.email,
+          items: itemsToSend,
+          total: computedTotal
+        })
+      });
+
+      const data = await res.json();
+      console.log("Order response:", res.status, data);
+
+      if (res.ok) {
+        toast.success("Order placed successfully!");
+        localStorage.removeItem("cartItems");
+
+        // Navigate to order details or history
+        if (data._id) {
+          navigate(`/track/${data._id}`);
+        } else {
+          navigate("/order-history");
+        }
+      } else {
+        toast.error(data.message || "Order failed");
+      }
     } catch (err) {
-      console.error('Place order error:', err);
-      toast.error('Order failed. Try again.');
+      console.error("Order creation failed:", err);
+      toast.error("Order creation failed");
     }
   };
+
 
   return (
     <div className='order-page'>
@@ -192,34 +221,37 @@ export default function OrderPage() {
         <h2>Place Order</h2>
         <input name="name" value={form.name} onChange={handleChange} placeholder="Full name" required />
         <input name="mobile" value={form.mobile} onChange={handleChange} placeholder="Mobile" required />
-        <input name="email" value={form.email} onChange={handleChange} placeholder="Email" />
+        <input name="email" value={form.email} onChange={handleChange} placeholder="Email" required />
         <textarea name="address" value={form.address} onChange={handleChange} placeholder="Address" required />
         <button type="submit">Place Order</button>
       </form>
-<div className="cart-summary">
-  <h3>Your Cart</h3>
-  {cartItems.length === 0 ? (
-    <p>No items</p>
-  ) : (
-    cartItems.map((item, index) => (
-      <div className="cart-itemed" key={index}>
-        <img src={item.image} alt={item.title} className="cart-item-image" />
-        <div className="cart-item-details">
-          <div className="item-name">{item.title}</div>
-          <div className="item-quantity">x {item.quantity}</div>
-          <div className="item-price">
-            ₹{(item.price || 0) * (item.quantity || 1)}
-          </div>
-        </div>
+
+      <div className="cart-summary">
+        <h3>Your Cart</h3>
+        {cartItems.length === 0 ? (
+          <p>No items</p>
+        ) : (
+          cartItems.map((item, index) => (
+            <div className="cart-itemed" key={index}>
+             
+               <img src={item.image || "/fallback.jpg"} alt={item.title} className="cart-img" 
+              
+               
+                onError={e => e.target.src = "/placeholder.jpg"}
+              />
+              <div className="cart-item-details">
+                <div className="item-name">{item.name || item.title}</div>
+                <div className="item-quantity">x {item.quantity}</div>
+                <div className="item-price">
+                  ₹{(Number(item.price) || Number(item.pices) || 0) * (Number(item.quantity) || 1)}
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+        <hr />
+        <div className="cart-total"><strong>Total: ₹{total}</strong></div>
       </div>
-    ))
-  )}
-
-
-  <hr />
-  <div className="cart-total"><strong>Total: ₹{total}</strong></div>
-</div>
-
 
       <ToastContainer />
     </div>

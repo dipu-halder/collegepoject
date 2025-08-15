@@ -1,64 +1,21 @@
-// import React, { useState, useEffect } from "react";
-// import { socket } from "../store/socket";
-
-// export default function TrackOrder() {
-//   const [orderId, setOrderId] = useState("");
-//   const [status, setStatus] = useState("Not Tracking");
-
-//   const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-
-//   useEffect(() => {
-//     socket.on("orderStatusUpdate", (update) => {
-//       setStatus(update.status);
-//     });
-
-//     return () => {
-//       socket.off("orderStatusUpdate");
-//     };
-//   }, []);
-
-//   const joinOrderRoom = async () => {
-//     if (!orderId) return alert("Enter Order ID");
-
-//     // Fetch current status
-//     const res = await fetch(`${backendUrl}/api/orders/${orderId}`);
-//     const data = await res.json();
-//     setStatus(data.status);
-
-//     // Join live updates
-//     socket.emit("joinOrder", orderId);
-//   };
-
-//   return (
-//     <div style={{ padding: "20px" }}>
-//       <h2>Track Order</h2>
-//       <input
-//         type="text"
-//         placeholder="Enter Order ID"
-//         value={orderId}
-//         onChange={(e) => setOrderId(e.target.value)}
-//       />
-//       <button onClick={joinOrderRoom}>Track</button>
-//       <p><b>Current Status:</b> {status}</p>
-//     </div>
-//   );
-// }
-// frontend/src/pages/OrderTrackingPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import '../Css/Trackingorder.css'; // Import the CSS file
+import '../Css/Trackingorder.css';
 
 export default function OrderTrackingPage() {
   const { orderId } = useParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/order/${orderId}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/order/${orderId}`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
         if (!res.ok) throw new Error('Order not found');
         const data = await res.json();
         setOrder(data);
@@ -69,31 +26,69 @@ export default function OrderTrackingPage() {
         setLoading(false);
       }
     };
-
     fetchOrder();
-  }, [orderId]);
+  }, [orderId, token]);
 
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="container">
+    <div className="tracking-container">
       <h2>Order Tracking</h2>
       {order ? (
-        <div>
-          <h3>Order ID: {order._id}</h3>
-          <h4>Status: {order.status}</h4>
-          <h4>User Info:</h4>
-          <p>Name: {order.user.name}</p>
-          <p>Email: {order.user.email}</p>
-          <p>Mobile: {order.user.mobile}</p>
-          <p>Address: {order.user.address}</p>
-          <h4>Items:</h4>
-          {order.items.map((item, index) => (
-            <div key={index} className="order-item">
-              <p>{item.title} x {item.quantity} - ₹{item.price * item.quantity}</p>
-            </div>
-          ))}
+        <div className="tracking-card">
+          <div className="tracking-header">
+            <h3>Order ID: {order._id}</h3>
+            <p>Status: <strong>{order.status}</strong></p>
+          </div>
+
+          <div className="user-info">
+            <h4>Customer Info:</h4>
+            <p><strong>Name:</strong> {order.customerName || "-"}</p>
+            <p><strong>Email:</strong> {order.customerEmail || "-"}</p>
+            <p><strong>Mobile:</strong> {order.customerPhone || "-"}</p>
+            <p><strong>Address:</strong> {order.customerAddress || "-"}</p>
+          </div>
+
+          <div className="order-items">
+            <h4>Items:</h4>
+            {Array.isArray(order.items) && order.items.length > 0 ? (
+              order.items.map((item, index) => (
+                <div key={index} className="order-item">
+                  <img
+                    src={item.img}
+                    alt={item.name}
+                    onError={(e) => (e.target.src = "/placeholder.jpg")}
+                  />
+                  <div>
+                    <p><strong>{item.name}</strong></p>
+                    <p>Qty: {item.quantity}</p>
+                    <p>₹{item.price * item.quantity}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No items found</p>
+            )}
+          </div>
+
           <h4 className="total">Total: ₹{order.total}</h4>
+
+          {/* Tracking progress */}
+          <div className="tracking-status">
+            <p>Tracking Progress:</p>
+            <ul className="progressbar">
+              {["Pending", "Confirmed", "Preparing", "Out for Delivery", "Delivered"]
+                .filter(step => stepOrderIndex(step) <= stepOrderIndex(order.status))
+                .map((step, idx) => (
+                  <li
+                    key={idx}
+                    className={step === order.status ? "active" : "completed"}
+                  >
+                    {step}
+                  </li>
+                ))}
+            </ul>
+          </div>
         </div>
       ) : (
         <p className="not-found">Order not found.</p>
@@ -101,4 +96,9 @@ export default function OrderTrackingPage() {
       <ToastContainer />
     </div>
   );
+}
+
+function stepOrderIndex(step) {
+  const orderSteps = ["Pending", "Confirmed", "Preparing", "Out for Delivery", "Delivered"];
+  return orderSteps.indexOf(step);
 }

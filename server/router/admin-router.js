@@ -28,7 +28,7 @@ router.route('/contacts').get(authMiddleware, adminMiddleware, adminController.g
 router.route('/contacts/delete/:id').delete(authMiddleware, adminMiddleware, adminController.deleteContactBYId);
 
 
-// ✅ New routes for orders
+// ✅  orders
 router.route('/orders').get(authMiddleware, adminMiddleware,adminController.getAllOrders);
 router.route('/orders/:id/status').patch(authMiddleware, adminMiddleware,  adminController.updateOrderStatus);
 

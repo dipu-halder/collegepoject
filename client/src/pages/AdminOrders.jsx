@@ -14,13 +14,33 @@ export const AdminOrders = () => {
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_URL}/api/admin/orders`,
-        {  method: "GET",
-           headers: { Authorization: authorizationToken } }
+        {
+          method: "GET",
+          headers: { Authorization: authorizationToken },
+        }
       );
+
+      if (!res.ok) {
+        console.error("Failed to fetch orders");
+        setOrders([]);
+        return;
+      }
+
       const data = await res.json();
-      setOrders(data);
+    console.log(data)
+      let fetchedOrders = [];
+      if (Array.isArray(data)) {
+        fetchedOrders = data;
+      } else if (data && Array.isArray(data.orders)) {
+        fetchedOrders = data.orders;
+      } else if (data && data.data && Array.isArray(data.data)) {
+        fetchedOrders = data.data;
+      }
+
+      setOrders(fetchedOrders);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching orders:", error);
+      setOrders([]);
     }
   };
 
@@ -42,18 +62,22 @@ export const AdminOrders = () => {
         getAllOrders();
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error updating status:", error);
     }
   };
 
   const getStatusClass = (status) => {
     switch (status) {
-      case "Delivered": return "status-delivered";
-      case "Confirmed": return "status-confirmed";
-      case "Preparing": return "status-preparing";
-      case "Out for Delivery": return "status-out";
-      case "Pending": 
-      default: return "status-pending";
+      case "Delivered":
+        return "status-delivered";
+      case "Confirmed":
+        return "status-confirmed";
+      case "Preparing":
+        return "status-preparing";
+      case "Out for Delivery":
+        return "status-out";
+      default:
+        return "status-pending";
     }
   };
 
@@ -61,28 +85,28 @@ export const AdminOrders = () => {
     getAllOrders();
   }, []);
 
-  // Filter orders
-  const filteredOrders = orders.filter(order => {
+  const filteredOrders = orders.filter((order) => {
     const search = searchTerm.toLowerCase();
     return (
-      order._id.toLowerCase().includes(search) ||
+      order._id?.toLowerCase().includes(search) ||
       order.user?.name?.toLowerCase().includes(search) ||
+      order.customerName?.toLowerCase().includes(search) ||
       order.status?.toLowerCase().includes(search)
     );
   });
 
-  // Pagination logic
   const indexOfLastOrder = currentPage * ordersPerPage;
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
-  const currentOrders = filteredOrders.slice(indexOfFirstOrder, indexOfLastOrder);
-
+  const currentOrders = filteredOrders.slice(
+    indexOfFirstOrder,
+    indexOfLastOrder
+  );
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
 
   return (
     <section className="admin_orders-section">
       <h1>All Orders</h1>
 
-      {/* Search Bar */}
       <input
         type="text"
         placeholder="Search by ID, User, or Status..."
@@ -96,7 +120,7 @@ export const AdminOrders = () => {
           <thead>
             <tr>
               <th>Order ID</th>
-              <th>User</th>
+              <th>Customer</th>
               <th>Items</th>
               <th>Total</th>
               <th>Status</th>
@@ -107,20 +131,68 @@ export const AdminOrders = () => {
             {currentOrders.length > 0 ? (
               currentOrders.map((order) => (
                 <tr key={order._id} className="order-row">
-                  <td>{order._id}</td>
-                  <td>{order.user?.name || "N/A"} ({order.user?.email || "N/A"})</td>
+                  <td>{order._id}
+                     <div> 
+                      <h3>user details</h3>
+                      
+                      {order.user?.email || order.customerEmail || "N/A"}
+                    </div>
+                  </td>
+                  <td>
+                    {/* Show registered user OR guest checkout form info */}
+                    <div>
+                      <strong>
+                        {order.user?.name || order.customerName || "N/A"}
+                      </strong>
+                    </div>
+                   
+                      
+                    <div>
+                      {order. order?.customerEmail|| order.customerEmail|| "N/A"}
+                    </div>
+                    <div>
+                      {order.user?.mobile || order.customerPhone || "N/A"}
+                    </div>
+                    <div>
+                      {order.user?.address || order.customerAddress || "N/A"}
+                    </div>
+                  </td>
                   <td>
                     {Array.isArray(order.items) && order.items.length > 0
-                      ? order.items
-                          .map(
-                            (item) =>
-                              `${item?.title || "Unknown"} x${item?.quantity || 0}`
-                          )
-                          .join(", ")
+                      ? order.items.map((item, index) => (
+                          <div
+                            key={index}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "5px",
+                              marginBottom: "4px",
+                            }}
+                          >
+                            {item?.img && (
+                              <img
+                                src={item.img}
+                                alt={item.name || "Item"}
+                                style={{
+                                  width: "40px",
+                                  height: "40px",
+                                  objectFit: "cover",
+                                  borderRadius: "4px",
+                                }}
+                              />
+                            )}
+                            <span>
+                              {item?.name || "Unknown"} ×
+                              {item?.quantity || 0}
+                            </span>
+                          </div>
+                        ))
                       : "No items"}
                   </td>
-                  <td>${order.total ?? 0}</td>
-                  <td className={`status-cell ${getStatusClass(order.status)}`}>
+                  <td>₹{order.total ?? 0}</td>
+                  <td
+                    className={`status-cell ${getStatusClass(order.status)}`}
+                  >
                     {order.status || "Pending"}
                   </td>
                   <td>
@@ -134,7 +206,9 @@ export const AdminOrders = () => {
                       <option value="Pending">Pending</option>
                       <option value="Confirmed">Confirmed</option>
                       <option value="Preparing">Preparing</option>
-                      <option value="Out for Delivery">Out for Delivery</option>
+                      <option value="Out for Delivery">
+                        Out for Delivery
+                      </option>
                       <option value="Delivered">Delivered</option>
                     </select>
                   </td>
@@ -142,14 +216,15 @@ export const AdminOrders = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="6">No orders found</td>
+                <td colSpan="6" style={{ textAlign: "center" }}>
+                  No orders found
+                </td>
               </tr>
             )}
           </tbody>
         </table>
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="pagination">
           <button
@@ -158,7 +233,9 @@ export const AdminOrders = () => {
           >
             Prev
           </button>
-          <span>{currentPage} / {totalPages}</span>
+          <span>
+            {currentPage} / {totalPages}
+          </span>
           <button
             disabled={currentPage === totalPages}
             onClick={() => setCurrentPage((prev) => prev + 1)}

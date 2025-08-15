@@ -21,6 +21,7 @@ import Navbar from "./components/Navbar";
 
 import OrderTrackingPage from "./pages/Tracking Page";
 import { AdminOrders } from "./pages/AdminOrders";
+import OrderHistory from "./pages/OrderHistory";
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/contact" element={<Contact />} />
+         <Route path="/order-history" element={<OrderHistory />} />
        {/* <Route path="/order" element={<OrderPage />} /> */}
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />

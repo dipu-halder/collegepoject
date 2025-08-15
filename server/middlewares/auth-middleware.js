@@ -2,15 +2,28 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user-model");
 
 const authMiddleware = async (req, res, next) => {
+  // const token = req.header("Authorization");
+
+  // if (!token) {
+  //   return res.status(401).json({ message: "Unauthorized. Token not provided" });
+  // }
+
+  // // Remove 'Bearer ' from the token
+  // const jwtToken = token.replace("Bearer", "").trim();
+  // console.log("Token from auth middleware:", token);
   const token = req.header("Authorization");
 
-  if (!token) {
-    return res.status(401).json({ message: "Unauthorized. Token not provided" });
-  }
+if (!token) {
+  return res.status(401).json({ message: "Unauthorized. Token not provided" });
+}
 
-  // Remove 'Bearer ' from the token
-  const jwtToken = token.replace("Bearer", "").trim();
-  console.log("Token from auth middleware:", token);
+const parts = token.split(" ");
+if (parts.length !== 2 || parts[0] !== "Bearer") {
+  return res.status(401).json({ message: "Unauthorized. Invalid token format" });
+}
+
+const jwtToken = parts[1]; // Only the actual token part
+console.log("Token from auth middleware:", jwtToken);
 
   try {
     const isVerified = jwt.verify(jwtToken, process.env.JWT_SECRET_KEY);
