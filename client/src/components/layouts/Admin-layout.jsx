@@ -91,8 +91,8 @@ export const AdminLayout = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/admin/services" className="admin-link" onClick={() => setShowSidebar(false)}>
-                Services
+              <NavLink to="/admin/riders" className="admin-link" onClick={() => setShowSidebar(false)}>
+             Riders
               </NavLink>
             </li>
             <li>

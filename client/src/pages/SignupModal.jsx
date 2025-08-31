@@ -1,79 +1,60 @@
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../store/auth";
 import './style/LoginSignup.css';
-import { Link } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const SignupPage = () => {
   const [user, setUser] = useState({
-    username: '',
-    email: '',
-    phone: '',
-    password: '',
+    username: "",
+    email: "",
+    phone: "",
+    password: "",
   });
 
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
   const { storeTokenInLS } = useAuth();
 
+  // Input change handler
   const handleInput = (e) => {
     const { name, value } = e.target;
-    setUser((prevUser) => ({
-      ...prevUser,
-      [name]: value,
-    }));
+    setUser((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(user),
-        credentials: "include" 
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(user),
+          credentials: "include",
+        }
+      );
 
       const res_data = await response.json();
 
       if (response.ok) {
-        toast.success("Sign up successful", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: "colored",
-        });
-
-        // Store the token
+        toast.success("Sign up successful 🎉", { theme: "colored" });
         storeTokenInLS(res_data.token);
 
-        // Reset form
-        setUser({
-          username: '',
-          email: '',
-          phone: '',
-          password: '',
-        });
+        // reset form
+        setUser({ username: "", email: "", phone: "", password: "" });
 
-        Navigate("/");
+        navigate("/");
       } else {
-        toast.error(res_data.extraDetails ? res_data.extraDetails : res_data.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
+        toast.error(res_data.extraDetails || res_data.message, {
           theme: "colored",
         });
       }
-    } catch (error) {
-      console.log("Signup error:", error);
+    } catch (err) {
+      console.error("Signup error:", err);
+      toast.error("Something went wrong. Please try again.", {
+        theme: "colored",
+      });
     }
   };
 
@@ -87,12 +68,11 @@ const SignupPage = () => {
             <input
               type="text"
               name="username"
-              id="username"
-              required
-              autoComplete="off"
-              placeholder="Enter your username"
+              placeholder="Enter your name"
               value={user.username}
               onChange={handleInput}
+              required
+              autoComplete="off"
             />
           </div>
 
@@ -101,26 +81,24 @@ const SignupPage = () => {
             <input
               type="email"
               name="email"
-              id="email"
-              required
-              autoComplete="off"
               placeholder="Enter your email"
               value={user.email}
               onChange={handleInput}
+              required
+              autoComplete="off"
             />
           </div>
 
           <div className="form-group">
             <label>Phone Number</label>
             <input
-              type="number"
+              type="tel"
               name="phone"
-              id="phone"
-              required
-              autoComplete="off"
               placeholder="Enter your phone number"
               value={user.phone}
               onChange={handleInput}
+              required
+              autoComplete="off"
             />
           </div>
 
@@ -129,12 +107,11 @@ const SignupPage = () => {
             <input
               type="password"
               name="password"
-              id="password"
-              required
-              autoComplete="off"
               placeholder="Enter your password"
               value={user.password}
               onChange={handleInput}
+              required
+              autoComplete="off"
             />
           </div>
 
@@ -143,9 +120,11 @@ const SignupPage = () => {
           </button>
         </form>
 
-        <p className="login-or">or</p>
+        <p className="login-or">Already have an account?👇</p>
         <Link to="/login">
-          <button type="button" className="btn-submit">Login</button>
+          <button type="button" className="btn-submit">
+            Login
+          </button>
         </Link>
       </div>
     </div>

@@ -132,37 +132,174 @@
 //     </div>
 //   );
 // };
-// frontend/src/pages/OrderPage.jsx
-import React, { useEffect, useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
-import '../Css/OrderPage.css';
+// // frontend/src/pages/OrderPage.jsx
+// import React, { useEffect, useState } from 'react';
+// import { toast, ToastContainer } from 'react-toastify';
+// import '../Css/OrderPage.css';
+// import { useNavigate } from "react-router-dom";
+
+// export default function OrderPage() {
+//   const [form, setForm] = useState({ name: '', email: '', mobile: '', address: '' });
+//   const [cartItems, setCartItems] = useState([]);
+//   const [total, setTotal] = useState(0);
+//   const navigate = useNavigate();
+//   const token = localStorage.getItem("token");
+
+//   // Load cart from localStorage
+//   useEffect(() => {
+//     const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+//     setCartItems(storedCart);
+//     let sum = 0;
+//     storedCart.forEach(item => sum += (Number(item.price) || Number(item.pices) || 0) * (Number(item.quantity) || 1));
+//     setTotal(sum);
+//   }, []);
+
+//   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+//   // Normalize cart data before sending to backend
+//   const normalizeForBackend = (items) => items.map(i => ({
+//     name: i.name || i.title || "Unknown",
+//     price: Number(i.price ?? i.pices ?? 0),
+//     quantity: Number(i.quantity ?? i.qty ?? 1),
+//     img: i.img || i.image || i.imagePath || ""
+//   }));
+
+//   const placeOrder = async (e) => {
+//     e.preventDefault();
+
+//     if (cartItems.length === 0) {
+//       toast.error("Your cart is empty!");
+//       return;
+//     }
+
+//     try {
+//       const itemsToSend = normalizeForBackend(cartItems);
+//       const computedTotal = itemsToSend.reduce((s, it) => s + (it.price || 0) * (it.quantity || 0), 0);
+
+//       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/order`, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           ...(token && { "Authorization": `Bearer ${token}` }) // Pass JWT to backend
+//         },
+//         body: JSON.stringify({
+//           customerName: form.name,
+//           customerPhone: form.mobile,
+//           customerAddress: form.address,
+//           customerEmail: form.email,
+//           items: itemsToSend,
+//           total: computedTotal
+//         })
+//       });
+
+//       const data = await res.json();
+//       console.log("Order response:", res.status, data);
+
+//       if (res.ok) {
+//         toast.success("Order placed successfully!");
+//         localStorage.removeItem("cartItems");
+
+//         // Navigate to order details or history
+//         if (data._id) {
+//           navigate(`/track/${data._id}`);
+//         } else {
+//           navigate("/order-history");
+//         }
+//       } else {
+//         toast.error(data.message || "Order failed");
+//       }
+//     } catch (err) {
+//       console.error("Order creation failed:", err);
+//       toast.error("Order creation failed");
+//     }
+//   };
+
+
+//   return (
+//     <div className='order-page'>
+//       <form onSubmit={placeOrder} className="order-form">
+//         <h2>Place Order</h2>
+//         <input name="name" value={form.name} onChange={handleChange} placeholder="Full name" required />
+//         <input name="mobile" value={form.mobile} onChange={handleChange} placeholder="Mobile" required />
+//         <input name="email" value={form.email} onChange={handleChange} placeholder="Email" required />
+//         <textarea name="address" value={form.address} onChange={handleChange} placeholder="Address" required />
+//         <button type="submit">Place Order</button>
+//       </form>
+
+//       <div className="cart-summary">
+//         <h3>Your Cart</h3>
+//         {cartItems.length === 0 ? (
+//           <p>No items</p>
+//         ) : (
+//           cartItems.map((item, index) => (
+//             <div className="cart-itemed" key={index}>
+             
+//                <img src={item.image || "/fallback.jpg"} alt={item.title} className="cart-img" 
+              
+               
+//                 onError={e => e.target.src = "/placeholder.jpg"}
+//               />
+//               <div className="cart-item-details">
+//                 <div className="item-name">{item.name || item.title}</div>
+//                 <div className="item-quantity">x {item.quantity}</div>
+//                 <div className="item-price">
+//                   ₹{(Number(item.price) || Number(item.pices) || 0) * (Number(item.quantity) || 1)}
+//                 </div>
+//               </div>
+//             </div>
+//           ))
+//         )}
+//         <hr />
+//         <div className="cart-total"><strong>Total: ₹{total}</strong></div>
+//       </div>
+
+//       <ToastContainer />
+//     </div>
+//   );
+// }
+// src/pages/OrderPage.jsx
+// src/pages/OrderPage.jsx
+import React, { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../Css/OrderPage.css";
 import { useNavigate } from "react-router-dom";
+import MapPickerGoogle from "../components/MapPickerGoogle"; // ✅ USE GOOGLE
 
 export default function OrderPage() {
-  const [form, setForm] = useState({ name: '', email: '', mobile: '', address: '' });
+  const [form, setForm] = useState({ name: "", email: "", mobile: "", address: "" });
   const [cartItems, setCartItems] = useState([]);
   const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [position, setPosition] = useState(null); // { lat, lng }
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  // Load cart from localStorage
+  // Load cart from localStorage and compute total
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
-    setCartItems(storedCart);
-    let sum = 0;
-    storedCart.forEach(item => sum += (Number(item.price) || Number(item.pices) || 0) * (Number(item.quantity) || 1));
-    setTotal(sum);
+    const normalized = storedCart.map((i) => ({
+      name: i.name || i.title || "Unknown",
+      price: Number(i.price ?? i.pices ?? 0) || 0,
+      quantity: Number(i.quantity ?? i.qty ?? 1) || 1,
+      img: i.img || i.image || i.imagePath || "/placeholder.jpg",
+    }));
+    setCartItems(normalized);
+    setTotal(normalized.reduce((s, it) => s + it.price * it.quantity, 0));
   }, []);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  // Normalize cart data before sending to backend
-  const normalizeForBackend = (items) => items.map(i => ({
-    name: i.name || i.title || "Unknown",
-    price: Number(i.price ?? i.pices ?? 0),
-    quantity: Number(i.quantity ?? i.qty ?? 1),
-    img: i.img || i.image || i.imagePath || ""
-  }));
+  const isValidMobile = (m) => /^[6-9]\d{9}$/.test(m);
+  const isValidEmail = (em) => !em || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
+
+  const normalizeForBackend = (items) =>
+    items.map((i) => ({
+      name: i.name,
+      price: i.price,
+      quantity: i.quantity,
+      img: i.img,
+    }));
 
   const placeOrder = async (e) => {
     e.preventDefault();
@@ -172,15 +309,42 @@ export default function OrderPage() {
       return;
     }
 
-    try {
-      const itemsToSend = normalizeForBackend(cartItems);
-      const computedTotal = itemsToSend.reduce((s, it) => s + (it.price || 0) * (it.quantity || 0), 0);
+    if (!form.name.trim() || !form.address.trim()) {
+      toast.error("Please fill name and address.");
+      return;
+    }
 
+    if (!isValidMobile(form.mobile)) {
+      toast.error("Enter valid 10-digit mobile number.");
+      return;
+    }
+
+    if (!isValidEmail(form.email)) {
+      toast.error("Enter a valid email or leave blank.");
+      return;
+    }
+
+    // Require picking a location for accurate tracking
+    if (!position) {
+      toast.error("Please pick your delivery location on the map — required for live tracking.");
+      return;
+    }
+
+    if (!token) {
+      toast.info("Please login to place an order.");
+      return navigate("/login");
+    }
+
+    const itemsToSend = normalizeForBackend(cartItems);
+    const computedTotal = itemsToSend.reduce((s, it) => s + (it.price || 0) * (it.quantity || 1), 0);
+
+    setLoading(true);
+    try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/order`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(token && { "Authorization": `Bearer ${token}` }) // Pass JWT to backend
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           customerName: form.name,
@@ -188,19 +352,31 @@ export default function OrderPage() {
           customerAddress: form.address,
           customerEmail: form.email,
           items: itemsToSend,
-          total: computedTotal
-        })
+          total: computedTotal,
+          status: "Confirmed",
+          orderTime: new Date().toISOString(),
+          // include lat/lng for map-based tracking
+          customerLat: position.lat,
+          customerLng: position.lng,
+        }),
       });
 
       const data = await res.json();
-      console.log("Order response:", res.status, data);
-
       if (res.ok) {
         toast.success("Order placed successfully!");
         localStorage.removeItem("cartItems");
+        setCartItems([]);
+        setTotal(0);
 
-        // Navigate to order details or history
-        if (data._id) {
+        if (data && data._id) {
+          localStorage.setItem(
+            "latestOrder",
+            JSON.stringify({
+              orderId: data._id,
+              status: data.status || "Confirmed",
+              createdAt: data.createdAt || new Date().toISOString(),
+            })
+          );
           navigate(`/track/${data._id}`);
         } else {
           navigate("/order-history");
@@ -211,49 +387,76 @@ export default function OrderPage() {
     } catch (err) {
       console.error("Order creation failed:", err);
       toast.error("Order creation failed");
+    } finally {
+      setLoading(false);
     }
   };
 
-
   return (
-    <div className='order-page'>
-      <form onSubmit={placeOrder} className="order-form">
+    <div className="order-page" style={{ display: "flex", gap: 20, padding: 16 }}>
+      <form onSubmit={placeOrder} className="order-form" style={{ flex: 1, maxWidth: 520 }}>
         <h2>Place Order</h2>
         <input name="name" value={form.name} onChange={handleChange} placeholder="Full name" required />
         <input name="mobile" value={form.mobile} onChange={handleChange} placeholder="Mobile" required />
-        <input name="email" value={form.email} onChange={handleChange} placeholder="Email" required />
-        <textarea name="address" value={form.address} onChange={handleChange} placeholder="Address" required />
-        <button type="submit">Place Order</button>
+        <input name="email" value={form.email} onChange={handleChange} placeholder="Email (optional)" />
+        <textarea
+          name="address"
+          value={form.address}
+          onChange={handleChange}
+          placeholder="Address (house/flat/landmark)"
+          required
+        />
+
+        <div style={{ marginTop: 12 }}>
+          <label style={{ fontWeight: 600 }}>Delivery Location (pick on map)</label>
+          <div style={{ marginTop: 8 }}>
+            <MapPickerGoogle position={position} setPosition={setPosition} />
+            <div style={{ marginTop: 8 }}>
+              {position ? (
+                <div>
+                  Selected: <strong>{position.lat.toFixed(5)}, {position.lng.toFixed(5)}</strong>
+                </div>
+              ) : (
+                <div style={{ color: "#b00" }}>No location selected — required for live tracking</div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" disabled={loading} style={{ marginTop: 12 }}>
+          {loading ? "Placing order..." : "Place Order"}
+        </button>
       </form>
 
-      <div className="cart-summary">
+      <div className="cart-summary" style={{ width: 360 }}>
         <h3>Your Cart</h3>
         {cartItems.length === 0 ? (
           <p>No items</p>
         ) : (
           cartItems.map((item, index) => (
-            <div className="cart-itemed" key={index}>
-             
-               <img src={item.image || "/fallback.jpg"} alt={item.title} className="cart-img" 
-              
-               
-                onError={e => e.target.src = "/placeholder.jpg"}
+            <div className="cart-itemed" key={index} style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+              <img
+                src={item.img}
+                alt={item.name}
+                className="cart-img"
+                style={{ width: 70, height: 70, objectFit: "cover" }}
+                onError={(e) => (e.target.src = "/placeholder.jpg")}
               />
               <div className="cart-item-details">
-                <div className="item-name">{item.name || item.title}</div>
+                <div className="item-name">{item.name}</div>
                 <div className="item-quantity">x {item.quantity}</div>
-                <div className="item-price">
-                  ₹{(Number(item.price) || Number(item.pices) || 0) * (Number(item.quantity) || 1)}
-                </div>
+                <div className="item-price">₹{item.price * item.quantity}</div>
               </div>
             </div>
           ))
         )}
         <hr />
-        <div className="cart-total"><strong>Total: ₹{total}</strong></div>
+        <div className="cart-total">
+          <strong>Total: ₹{total}</strong>
+        </div>
       </div>
 
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={2500} />
     </div>
   );
 }

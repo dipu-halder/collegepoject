@@ -1,88 +1,48 @@
-
-
+// controllers/auth-controller.js
 const User = require("../models/user-model");
-const bcrypt = require("bcryptjs");
 
+const home = async (req, res) => res.status(200).send("Welcome to auth router");
 
-// Home Route
-const home = async (req, res) => {
+const register = async (req, res, next) => {
   try {
-    res.status(200).send("Welcome to using router");
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ msg: "Internal Server Error" });
-  }
-};
-
-// Register Route
-const register = async (req, res) => {
-  try {
-    console.log(req.body);
-
     const { username, email, phone, password } = req.body;
+    if (!username || !email || !phone || !password) return res.status(400).json({ message: "Missing fields" });
 
-    const userExist = await User.findOne({ email });
+    const existing = await User.findOne({ email });
+    if (existing) return res.status(400).json({ message: "Email already exists" });
 
-    if (userExist) {
-      return res.status(400).json({ message: "Email already exists" });
-    }
-
-    const userCreated = await User.create({ username, email, phone, password });
-
-    res.status(201).json({
-      msg:userCreated,
-      token: await userCreated.generateToken(),
-      userId: userCreated._id.toString(),
-    });
-  } catch (error) {
-    // console.error(error);
-    // res.status(500).json({ msg: "Something went wrong on the server" });
-    next(error);
+    const user = await User.create({ username, email, phone, password });
+    const token = user.generateToken();
+    return res.status(201).json({ message: "User created", token, userId: user._id.toString() });
+  } catch (err) {
+    console.error("Registration error:", err);
+    next(err);
   }
 };
 
-//user login logic
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
-    const userExist = await User.findOne({ email });
-    if (!userExist) {
-      return res.status(400).json({ message: "Invalid credentials" });
-    }
+    const ok = await user.comparePassword(password);
+    if (!ok) return res.status(401).json({ message: "Invalid email or password" });
 
-    const isPasswordValid = await userExist.comparePassword(password);
-    if (!isPasswordValid) {
-      return res.status(401).json({ message: "Invalid email or password" });
-    }
-
-    const token = await userExist.generateToken();
-    res.status(200).json({
-      msg: "Login successful",
-      token,
-      userId: userExist._id.toString(),
-    });
-
-  } catch (error) {
-    next(error);
+    const token = user.generateToken();
+    return res.status(200).json({ msg: "Login successful", token, userId: user._id.toString() });
+  } catch (err) {
+    next(err);
   }
 };
 
-
-// User logic to send user data
 const user = async (req, res) => {
   try {
-    const userData = req.user; // Set by authMiddleware
-    console.log("User data:", userData);
-
-    return res.status(200).json({ userData });
-  } catch (error) {
-    console.error(`Error from the user route: ${error}`);
+    return res.status(200).json({ userData: req.user });
+  } catch (err) {
+    console.error("user route error:", err);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-
-
-
-module.exports = { home, register, login, user, };
+module.exports = { home, register, login, user };

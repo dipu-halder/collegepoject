@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 
 
-const URI = process.env.MONGODB_URI;
+const URI = process.env.MONGO_URI || process.env.MONGODB_URI;
 // mongoose.connect(uri);
 
 const connectdb = async () => {
@@ -17,6 +17,5 @@ const connectdb = async () => {
 }
 
 module.exports = connectdb;
-
 
 
