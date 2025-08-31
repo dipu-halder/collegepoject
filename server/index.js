@@ -182,8 +182,8 @@ const server = http.createServer(app);
 const corsOptions = {
   origin: [
     "http://localhost:5173", // local frontend
-    "https://yourfrontend.netlify.app", // netlify deploy
-    "https://yourfrontend.vercel.app",  // vercel deploy
+    "https://heartfelt-griffin-946104.netlify.app",
+    "https://collegepoject-erpw.vercel.app/",
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
   credentials: true,
