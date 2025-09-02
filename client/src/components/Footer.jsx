@@ -14,6 +14,9 @@ const Footer = () => {
             <h3 className="footer-title">Quick Links</h3>
             <ul className="footer-links">
               <li><a href="#">Home</a></li>
+             <li><Link to="/rider/map" onClick={() => setIsOpen(false)}>ridermap</Link></li>
+             <li><Link to="/riderform" onClick={() => setIsOpen(false)}>riderregister</Link></li>
+             <li><Link to="/riderpanel" onClick={() => setIsOpen(false)}>riderpamder</Link></li>
               <li><a href="#">About</a></li>
               <li><a href="#">Menu</a></li>
               <li><a href="#">Contact</a></li>

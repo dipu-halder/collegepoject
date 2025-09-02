@@ -196,7 +196,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/rider-test" element={<RiderPanel />} />
+        <Route path="/riderpanel" element={<RiderPanel />} />
         <Route path="/order-history" element={<OrderHistory />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
