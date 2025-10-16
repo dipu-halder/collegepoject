@@ -17,7 +17,7 @@ const Footer = () => {
               <li><a href="#">Home</a></li>
              <li><Link to="/rider/map">ridermap</Link></li>
              <li><Link to="/riderform">riderregister</Link></li>
-             <li><Link to="/riderpanel">riderpamder</Link></li>
+             <li><Link to="/riderpanel"   >riderpamder</Link></li>
               <li><a href="#">About</a></li>
               <li><a href="#">Menu</a></li>
               <li><a href="#">Contact</a></li>

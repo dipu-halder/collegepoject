@@ -2,45 +2,24 @@
 import { io } from "socket.io-client";
 
 /**
- * normalizeToken: accept either "Bearer <token>" or raw token and return "Bearer <raw>"
+ * createSocket(token)
+ * - token: either raw token ("ey...") or "Bearer ey..." or null
+ * Returns an initialized socket.io-client instance.
+ *
+ * This function normalizes token to "Bearer <raw>" and passes it via auth.
+ * It also enables websocket transport for reliability.
  */
-function normalizeToken(raw) {
-  if (!raw) return "";
-  // if stored token already includes "Bearer " return as-is
-  if (raw.startsWith("Bearer ")) return raw;
-  return `Bearer ${raw}`;
-}
+export function createSocket(token) {
+  const raw = (token || "").toString();
+  const normalized = raw.match(/^Bearer\s+/i) ? raw : raw ? `Bearer ${raw}` : null;
 
-/**
- * SOCKET_URL read from env fallbacks
- */
-const SOCKET_URL =
-  import.meta.env.VITE_SOCKET_URL ||
-  import.meta.env.VITE_BACKEND_URL ||
-  import.meta.env.VITE_API_BASE ||
-  "http://localhost:5000";
+  const url = import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL || "/";
 
-/**
- * createSocket(optionalToken)
- * - optionalToken: raw token or "Bearer <token>" or undefined (will read localStorage token)
- * - returns socket instance (socket.io-client)
- */
-export function createSocket(optionalToken) {
-  const raw = optionalToken ?? localStorage.getItem("token") ?? "";
-  const bearer = normalizeToken(raw);
-
-  const socket = io(SOCKET_URL, {
-    auth: bearer ? { token: bearer } : {},
+  const socket = io(url, {
+    auth: { token: normalized },
     transports: ["websocket"],
-    reconnection: true,
-    reconnectionAttempts: 5,
+    autoConnect: true,
   });
-
-  socket.on("connect", () => console.log("[socket] connected", socket.id));
-  socket.on("connect_error", (err) => console.warn("[socket] connect_error:", err?.message || err));
-  socket.on("disconnect", (reason) => console.log("[socket] disconnected", reason));
 
   return socket;
 }
-
-export default createSocket;

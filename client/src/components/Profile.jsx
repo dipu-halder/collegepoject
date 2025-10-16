@@ -1,43 +1,4 @@
-// import React, { useEffect, useState } from "react";
 
-// const Profile = () => {
-//   const [user, setUser] = useState(null);
-
-//   useEffect(() => {
-//     const token = localStorage.getItem("token"); // login ke baad yaha save karna hoga
-//     if (!token) return;
-
-//     fetch("http://localhost:5000/api/auth/user", {
-//       method: "GET",
-//       headers: {
-//         Authorization: `Bearer ${token}`, // 👈 yaha Bearer add karna zaruri hai
-//       },
-//     })
-//       .then((res) => res.json())
-//       .then((data) => {
-//         console.log("Profile data:", data);
-//         setUser(data.userData);
-//       })
-//       .catch((err) => console.error(err));
-//   }, []);
-
-//   if (!user) {
-//     return <p>⚠️ Please login to see your profile.</p>;
-//   }
-
-//   return (
-//     <div>
-//       <h2>My Profile</h2>
-//       <p><b>Username:</b> {user.username}</p>
-//       <p><b>Email:</b> {user.email}</p>
-//       <p><b>Phone:</b> {user.phone}</p>
-//       <p><b>Admin:</b> {user.isAdmin ? "Yes" : "No"}</p>
-//     </div>
-    
-//   );
-// };
-
-// export default Profile;
 
 import React, { useEffect, useState } from "react";
 import "./Profile.css";

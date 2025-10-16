@@ -2,14 +2,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { GoogleMap, Marker, useJsApiLoader, Polyline } from "@react-google-maps/api";
-import createSocket from "../utils/socket";
+import { createSocket } from "../utils/socket";
 import apiFetch from "../utils/apiFetch";
 
 const containerStyle = { width: "100%", height: "480px" };
 
 function haversineDistanceMeters(a, b) {
   if (!a || !b) return null;
-  const toRad = (v) => (v * Math.PI) / 180;
+  const toRad = v => (v * Math.PI) / 180;
   const R = 6371e3;
   const φ1 = toRad(a.lat), φ2 = toRad(b.lat);
   const Δφ = toRad(b.lat - a.lat), Δλ = toRad(b.lng - a.lng);
@@ -32,7 +32,7 @@ export default function OrderTrackingMap({ orderId: propOrderId, token: propToke
   const mapRef = useRef(null);
   const lastPanRef = useRef(null);
 
-  const token = propToken || localStorage.getItem("token") || null;
+  const localToken = propToken || localStorage.getItem("token") || null;
   const { isLoaded } = useJsApiLoader({ googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY });
 
   const extractLatLng = (data) => {
@@ -43,7 +43,6 @@ export default function OrderTrackingMap({ orderId: propOrderId, token: propToke
     if (data.deliveryAddress?.coordinates && Array.isArray(data.deliveryAddress.coordinates)) {
       const [lng, lat] = data.deliveryAddress.coordinates; return { lat: Number(lat), lng: Number(lng) };
     }
-    if (data.location?.lat != null && data.location?.lng != null) return { lat: Number(data.location.lat), lng: Number(data.location.lng) };
     return null;
   };
 
@@ -58,7 +57,6 @@ export default function OrderTrackingMap({ orderId: propOrderId, token: propToke
       return data;
     } catch (err) {
       console.error("fetchOrder error:", err);
-      return null;
     }
   }
 
@@ -74,9 +72,7 @@ export default function OrderTrackingMap({ orderId: propOrderId, token: propToke
         mapRef.current.panTo(loc);
         lastPanRef.current = loc;
       }
-    } catch (e) {
-      try { mapRef.current.setCenter(loc); } catch (err) {}
-    }
+    } catch (e) { try { mapRef.current.setCenter(loc); } catch {} }
   };
 
   useEffect(() => {
@@ -84,16 +80,18 @@ export default function OrderTrackingMap({ orderId: propOrderId, token: propToke
       if (socketRef.current) { try { socketRef.current.disconnect(); } catch (e) {} socketRef.current = null; }
       return;
     }
+    if (socketRef.current) return; // prevent duplicate sockets
 
     setSocketErrorMsg(null);
-    const socket = createSocket(token);
+    const socket = createSocket(localToken);
     socketRef.current = socket;
 
     socket.on("connect", () => {
       try {
         socket.emit("joinOrder", orderId);
-        console.log("[socket] joined order room:", orderId);
-      } catch (e) {}
+        const assignedRid = order?.assignedRider?._id || order?.assignedRider;
+        if (assignedRid) socket.emit("joinRider", assignedRid);
+      } catch (e) { console.warn(e); }
     });
 
     socket.on("connect_error", (err) => {
@@ -105,7 +103,7 @@ export default function OrderTrackingMap({ orderId: propOrderId, token: propToke
 
     const onLocation = (payload) => {
       if (!payload) return;
-      if (payload.riderId && String(payload.riderId) !== String(assignedRid)) return;
+      if (payload.riderId && assignedRid && String(payload.riderId) !== String(assignedRid)) return;
       if (payload.orderId && String(payload.orderId) !== String(orderId)) return;
       const lat = payload.lat ?? payload.location?.lat ?? payload.latitude;
       const lng = payload.lng ?? payload.location?.lng ?? payload.longitude;
@@ -123,7 +121,7 @@ export default function OrderTrackingMap({ orderId: propOrderId, token: propToke
       if (newStatus) {
         setStatus(newStatus);
         if (String(newStatus).toLowerCase() === "delivered") {
-          try { socket.disconnect(); } catch (e) {}
+          try { socket.disconnect(); } catch {}
           socketRef.current = null;
         }
       }
@@ -139,7 +137,13 @@ export default function OrderTrackingMap({ orderId: propOrderId, token: propToke
     socket.on("order.status", onStatus);
     socket.on("tracking.status", onStatus);
 
+    // fallback: if no riderLocation arrives in 12s, show message
+    let noLocTimer = setTimeout(() => {
+      if (!riderLocation) setSocketErrorMsg((s) => s || "Rider hasn't shared location yet.");
+    }, 12000);
+
     return () => {
+      clearTimeout(noLocTimer);
       try {
         socket.off("order.riderLocation", onLocation);
         socket.off("rider.location", onLocation);
@@ -153,13 +157,12 @@ export default function OrderTrackingMap({ orderId: propOrderId, token: propToke
         socket.off("error");
         socket.disconnect();
       } catch (e) {}
+      socketRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, orderId, token, followRider]);
+  }, [order, orderId, followRider]);
 
-  useEffect(() => {
-    if (followRider && riderLocation) panToRider(riderLocation);
-  }, [riderLocation, followRider]);
+  useEffect(() => { if (followRider && riderLocation) panToRider(riderLocation); }, [riderLocation, followRider]);
 
   const center = riderLocation || orderLocation || { lat: 22.5726, lng: 88.3639 };
 
@@ -171,8 +174,8 @@ export default function OrderTrackingMap({ orderId: propOrderId, token: propToke
       <p>Status: <strong>{status || "—"}</strong></p>
 
       {socketErrorMsg && (
-        <div style={{ padding: 8, background: "#fff2f0", border: "1px solid #ffcccc", marginBottom: 8 }}>
-          ⚠️ Real-time tracking unavailable: <strong>{socketErrorMsg}</strong>
+        <div style={{ padding: 8, background: "#fff8e6", border: "1px solid #ffe39f", marginBottom: 8 }}>
+          ⚠️ {socketErrorMsg}
         </div>
       )}
 
@@ -186,23 +189,10 @@ export default function OrderTrackingMap({ orderId: propOrderId, token: propToke
       </div>
 
       <div style={{ width: "100%", height: 480, borderRadius: 8, overflow: "hidden", background: "#eee" }}>
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={center}
-          zoom={14}
-          onLoad={(map) => { mapRef.current = map; }}
-        >
-          {riderLocation && (
-            <Marker position={riderLocation} label="R" icon={{ url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png" }} />
-          )}
-
-          {orderLocation && (
-            <Marker position={orderLocation} label="D" icon={{ url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png" }} />
-          )}
-
-          {riderLocation && orderLocation && (
-            <Polyline path={[riderLocation, orderLocation]} options={{ strokeWeight: 4, geodesic: true }} />
-          )}
+        <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={14} onLoad={(map) => { mapRef.current = map; }}>
+          {riderLocation && <Marker position={riderLocation} label="R" icon={{ url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png" }} />}
+          {orderLocation && <Marker position={orderLocation} label="D" icon={{ url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png" }} />}
+          {riderLocation && orderLocation && <Polyline path={[riderLocation, orderLocation]} options={{ strokeWeight: 4, geodesic: true }} />}
         </GoogleMap>
       </div>
 
