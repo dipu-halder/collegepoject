@@ -25,6 +25,7 @@ const corsOptions = {
     "http://localhost:5173", // local frontend
     "https://heartfelt-griffin-946104.netlify.app",
     "https://collegepoject-erpw.vercel.app/",
+    "https://tiffinwaala.netlify.app/",
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
   credentials: true,
