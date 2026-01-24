@@ -82,7 +82,7 @@
 //     origin: [
 //       "http://localhost:5173",
 //       "https://heartfelt-griffin-946104.netlify.app",
-//       "https://collegepoject-erpw.vercel.app/",
+//       "https://collegepoject-erpw.vercel.app/","https://tiffinwaala.netlify.app/",
 //     ],
 //     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
 //     credentials: true
